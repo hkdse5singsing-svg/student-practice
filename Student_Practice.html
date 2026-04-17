@@ -34,6 +34,7 @@ const FB_CONFIG = {
   --red:#c62828;--red-lt:#ffebee;
   --orange:#e65100;--orange-lt:#fff3e0;
   --teal:#00695c;--teal-lt:#e0f2f1;--teal-md:#00897b;
+  --purple:#6a1b9a;--purple-lt:#f3e5f5;
   --bg:#f0f2f5;--white:#fff;--border:#e0e0e0;
   --text:#212121;--text-lt:#757575;
   --r:8px;--shadow:0 2px 10px rgba(0,0,0,.11);--trans:.15s ease;
@@ -70,7 +71,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 
 /* ── APP SCREEN ── */
 #s-app{background:var(--bg)}
-#hdr{background:var(--blue);color:#fff;height:52px;padding:0 18px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);flex-shrink:0}
+#hdr{background:var(--blue);color:#fff;height:52px;padding:0 18px;display:flex;align-items:center;gap:10px;position:sticky;top:52px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);flex-shrink:0}
 #hdr-title{font-size:15px;font-weight:700;flex:1}
 .hdr-user{display:flex;align-items:center;gap:8px;font-size:12px}
 .hdr-name{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -78,7 +79,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .hbtn:hover{background:rgba(255,255,255,.18)}
 
 /* ── TABS ── */
-#tab-nav{background:#fff;display:flex;border-bottom:2px solid var(--border);flex-shrink:0;position:sticky;top:52px;z-index:99}
+#tab-nav{background:#fff;display:flex;border-bottom:2px solid var(--border);flex-shrink:0;position:sticky;top:104px;z-index:99}
 .tbtn{flex:1;padding:13px 6px;font-size:13px;font-weight:600;color:var(--text-lt);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all var(--trans)}
 .tbtn.on{color:var(--blue);border-bottom-color:var(--blue)}
 .tbtn:hover:not(.on){background:#fafafa}
@@ -108,8 +109,47 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .empty-msg{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-lt)}
 .empty-msg b{display:block;font-size:15px;margin-bottom:6px;color:var(--text)}
 
+/* ── LOGO BAR ── */
+#logo-bar{background:#fff;border-bottom:1px solid var(--border);padding:5px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:sticky;top:0;z-index:101;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.logo-img{height:42px;width:auto}
+.logo-contact{margin-left:auto;display:flex;gap:14px;align-items:center}
+.logo-contact a{font-size:12px;color:var(--text-lt);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color var(--trans)}
+.logo-contact a:hover{color:var(--blue)}
+.logo-contact svg{flex-shrink:0}
+
 /* ── PRACTICE ── */
-#tb-practice{padding:20px;max-width:660px;margin:0 auto}
+#tb-practice{padding:0}
+.prac-idle-wrap{padding:20px;max-width:660px;margin:0 auto}
+.prac-layout{display:flex;align-items:flex-start}
+.prac-sidebar{width:52px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);padding:10px 5px;display:flex;flex-direction:column;gap:5px;align-items:center;position:sticky;top:0;max-height:100vh;overflow-y:auto;align-self:flex-start}
+.prac-main{flex:1;padding:20px;max-width:640px;min-width:0}
+.q-num-btn{width:36px;height:30px;border-radius:6px;font-size:11px;font-weight:700;border:1.5px solid var(--border);background:#fff;color:var(--text-lt);transition:all var(--trans);display:flex;align-items:center;justify-content:center}
+.q-num-btn:hover{border-color:var(--blue);color:var(--blue)}
+.qn-current{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}
+.qn-correct{background:var(--green-lt)!important;color:var(--green)!important;border-color:var(--green)!important}
+.qn-wrong{background:var(--red-lt)!important;color:var(--red)!important;border-color:var(--red)!important}
+.qn-skipped{background:var(--orange-lt)!important;color:var(--orange)!important;border-color:var(--orange)!important}
+.prac-timer{display:flex;align-items:center;gap:8px;background:#fff;border-radius:8px;padding:8px 14px;margin-bottom:14px;box-shadow:var(--shadow)}
+.timer-val{font-size:17px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;min-width:44px}
+.timer-warn .timer-val{color:var(--red)}
+.skip-btn{padding:9px 16px;border-radius:8px;border:2px solid var(--orange);color:var(--orange);font-size:13px;font-weight:600;background:none;transition:all var(--trans)}
+.skip-btn:hover{background:var(--orange-lt)}
+/* end screen review */
+.review-section{text-align:left;margin-top:20px}
+.review-toggle{font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;background:none;padding:8px 0;display:block;width:100%}
+.rcard{background:#fff;border-radius:8px;box-shadow:0 1px 5px rgba(0,0,0,.08);overflow:hidden;margin-bottom:8px;border-left:4px solid var(--border);display:flex;gap:0;flex-direction:column}
+.rcard.rc-correct{border-left-color:var(--green)}
+.rcard.rc-wrong{border-left-color:var(--red)}
+.rcard.rc-skipped{border-left-color:var(--orange)}
+.rcard-head{display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:12px;flex-wrap:wrap}
+.rcard-qnum{font-weight:700;color:var(--text-lt);font-size:11px;min-width:22px}
+.rcard-status{font-weight:700;font-size:12px;padding:2px 8px;border-radius:10px}
+.rc-correct .rcard-status{background:var(--green-lt);color:var(--green)}
+.rc-wrong .rcard-status{background:var(--red-lt);color:var(--red)}
+.rc-skipped .rcard-status{background:var(--orange-lt);color:var(--orange)}
+.rcard-ans-info{font-size:11px;color:var(--text-lt);margin-left:auto}
+.rcard-img{width:100%;max-height:130px;object-fit:contain;background:#fafafa;border-top:1px solid var(--border)}
+@media(max-width:480px){.prac-sidebar{width:40px}.q-num-btn{width:28px;height:26px;font-size:10px}}
 /* Idle */
 .idle-wrap{text-align:center;padding:40px 10px}
 .idle-title{font-size:20px;font-weight:700;margin-bottom:10px}
@@ -185,6 +225,23 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .d-medium{background:var(--orange-lt);color:var(--orange)}
 .d-hard{background:var(--red-lt);color:var(--red)}
 .d-new{background:#f0f0f0;color:var(--text-lt)}
+/* difficulty filter pills */
+.tpill.d-easy{border-color:var(--green);color:var(--green)}
+.tpill.d-easy.on{background:var(--green);color:#fff}
+.tpill.d-medium{border-color:var(--orange);color:var(--orange)}
+.tpill.d-medium.on{background:var(--orange);color:#fff}
+.tpill.d-hard{border-color:var(--red);color:var(--red)}
+.tpill.d-hard.on{background:var(--red);color:#fff}
+/* personal tags */
+.ptag{padding:2px 7px;border-radius:10px;font-size:10px;background:var(--purple-lt);color:var(--purple);font-weight:600;display:inline-flex;align-items:center;gap:2px}
+.tpill.ptpill{border-color:var(--purple);color:var(--purple)}
+.tpill.ptpill.on{background:var(--purple);color:#fff}
+.add-ptag-btn{padding:2px 8px;border-radius:10px;font-size:10px;border:1.5px dashed #ce93d8;color:var(--purple);background:none;font-weight:600;transition:background var(--trans)}
+.add-ptag-btn:hover{background:var(--purple-lt)}
+.ptag-del{background:none;border:none;color:var(--purple);font-size:10px;cursor:pointer;padding:0;line-height:1;opacity:.65}
+.ptag-del:hover{opacity:1}
+.ptag-input-row{display:flex;gap:5px;margin-top:5px}
+.ptag-input{border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:12px;flex:1;min-width:0}
 .ts-count{font-size:11px;color:var(--text-lt);min-width:52px;text-align:right}
 .stats-empty{text-align:center;padding:60px 20px;color:var(--text-lt)}
 .stats-empty-icon{font-size:40px;margin-bottom:12px}
@@ -230,6 +287,19 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 
 <!-- ── APP SCREEN ── -->
 <div class="screen" id="s-app">
+  <div id="logo-bar">
+    <img class="logo-img" src="data:image/png;base64,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" alt="一點就明 葉Sir數學">
+    <div class="logo-contact">
+      <a href="https://wa.me/85294390766" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        94390766
+      </a>
+      <a href="https://instagram.com/yipsirmaths" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="url(#ig-grad)"><defs><linearGradient id="ig-grad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="25%" stop-color="#e6683c"/><stop offset="50%" stop-color="#dc2743"/><stop offset="75%" stop-color="#cc2366"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        yipsirmaths
+      </a>
+    </div>
+  </div>
   <div id="hdr">
     <div id="hdr-title">📚 Student Practice</div>
     <div class="hdr-user">
@@ -253,9 +323,15 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 // ══════════════════════ GLOBALS ══════════════════════
 let fbAuth=null, fbDb=null, fbUser=null;
 let questions=[], attempts=[], tagStats={};
-let curTab='browse', browseTag='all', practiceMode='all';
+let curTab='browse', browseTag='all', browseDiff='all', browsePersonalTag='all';
+let practiceMode='all', practiceDiff='all';
+let practiceRevealMode='instant'; // 'instant' | 'end'
+let practiceTimelimit=0; // minutes, 0=no limit
+let timerInterval=null, timerLeft=0;
 // Practice session state
-let P={phase:'idle',queue:[],idx:0,chosen:null,results:[]};
+// P.answers[i] = null | {chosen,isCorrect} | {skipped:true}
+let P={phase:'idle',queue:[],answers:[],idx:0,chosen:null,results:[]};
+let personalTags={};  // {questionId:[tag,...]}
 
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
@@ -299,13 +375,16 @@ function doSignOut(){fbAuth.signOut()}
 async function loadData(){
   loader(true);
   try{
-    const [qSnap,aSnap]=await Promise.all([
+    const [qSnap,aSnap,ptSnap]=await Promise.all([
       fbDb.collection('mc_questions').get(),
       fbDb.collection('students').doc(fbUser.uid).collection('attempts')
-        .orderBy('timestamp','desc').limit(600).get()
+        .orderBy('timestamp','desc').limit(600).get(),
+      fbDb.collection('students').doc(fbUser.uid).collection('personalTags').get()
     ]);
     questions=qSnap.docs.map(d=>({id:d.id,...d.data()}));
     attempts=aSnap.docs.map(d=>({id:d.id,...d.data()}));
+    personalTags={};
+    ptSnap.docs.forEach(d=>{personalTags[d.id]=d.data().tags||[]});
     computeTagStats();
   }catch(e){toast('Error loading: '+e.message,4000)}
   loader(false);
@@ -332,6 +411,12 @@ function computeTagStats(){
   });
 }
 
+function getDiff(q){
+  if(q.correctPct==null)return'new';
+  return q.correctPct>60?'easy':q.correctPct>36?'medium':'hard';
+}
+function diffLabel(d){return d==='new'?'New':d.charAt(0).toUpperCase()+d.slice(1)}
+
 // ══════════════════════ TABS ══════════════════════
 function goTab(tab){
   ['browse','practice','stats'].forEach(t=>{
@@ -351,27 +436,62 @@ function getAllTags(){return[...new Set(questions.flatMap(q=>q.tags||[]))].sort(
 
 function renderBrowse(){
   const tags=getAllTags();
-  const qs=browseTag==='all'?questions:questions.filter(q=>(q.tags||[]).includes(browseTag));
+  const ptags=[...new Set(Object.values(personalTags).flat())].sort();
 
+  // apply filters
+  let qs=browseTag==='all'?[...questions]:questions.filter(q=>(q.tags||[]).includes(browseTag));
+  if(browseDiff!=='all')qs=qs.filter(q=>getDiff(q)===browseDiff);
+  if(browsePersonalTag!=='all')qs=qs.filter(q=>(personalTags[q.id]||[]).includes(browsePersonalTag));
+
+  // tag pills row
   const pills=`<button class="tpill all${browseTag==='all'?' on':''}" onclick="setBrowseTag('all')">All (${questions.length})</button>`
     +tags.map(t=>`<button class="tpill tag${browseTag===t?' on':''}" onclick="setBrowseTag('${esc(t)}')">${esc(t)}</button>`).join('');
 
+  // difficulty pills row
+  const diffPills=`<button class="tpill all${browseDiff==='all'?' on':''}" onclick="setBrowseDiff('all')">All Levels</button>`
+    +['easy','medium','hard'].map(d=>`<button class="tpill d-${d}${browseDiff===d?' on':''}" onclick="setBrowseDiff('${d}')">${diffLabel(d)}</button>`).join('');
+
+  // personal tag pills row
+  const ptPills=ptags.length
+    ?`<button class="tpill ptpill${browsePersonalTag==='all'?' on':''}" onclick="setBrowsePersonalTag('all')">★ My Tags</button>`
+      +ptags.map(t=>`<button class="tpill ptpill${browsePersonalTag===t?' on':''}" onclick="setBrowsePersonalTag('${esc(t)}')">${esc(t)}</button>`).join('')
+    :'';
+
   const cards=qs.length===0
-    ?`<div class="empty-msg"><b>No questions yet</b>Teacher hasn't synced any questions yet.</div>`
+    ?`<div class="empty-msg"><b>No questions</b>No questions match this filter.</div>`
     :qs.map(q=>{
       const tgs=(q.tags||[]).map(t=>`<span class="qtag">${esc(t)}</span>`).join('');
+      const qptags=personalTags[q.id]||[];
+      const ptgs=qptags.map((t,ti)=>`<span class="ptag">${esc(t)}<button class="ptag-del" title="Remove" onclick="removePersonalTag('${q.id}',${ti})">✕</button></span>`).join('');
+      const diff=getDiff(q);
+      const diffBadge=diff!=='new'?`<span class="d-badge d-${diff}">${diffLabel(diff)}</span>`:'';
       return`<div class="qcard">
         ${q.image?`<img class="qcard-img" src="${q.image}" loading="lazy">`:''}
         <div class="qcard-body">
           ${q.text?`<div class="qcard-text">${esc(q.text)}</div>`:''}
-          ${tgs?`<div class="qcard-tags">${tgs}</div>`:''}
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            ${tgs?`<div class="qcard-tags">${tgs}</div>`:''}
+            ${diffBadge}
+          </div>
+          ${ptgs?`<div class="qcard-tags" style="margin-top:2px">${ptgs}</div>`:''}
+          <div><button class="add-ptag-btn" onclick="showAddPTag('${q.id}')">＋ My Tag</button></div>
+          <div id="ptag-input-${q.id}" style="display:none">
+            <div class="ptag-input-row">
+              <input class="ptag-input" id="ptag-val-${q.id}" placeholder="Tag name…" onkeydown="if(event.key==='Enter')addPTag('${q.id}')">
+              <button onclick="addPTag('${q.id}')" style="padding:4px 11px;border-radius:6px;background:var(--purple);color:#fff;font-size:11px;font-weight:600;border:none;cursor:pointer">Add</button>
+            </div>
+          </div>
           <div class="qcard-ans" id="ba-${q.id}">${q.answer?'Answer: '+esc(q.answer):'No answer set'}</div>
           <button class="show-ans" onclick="toggleBA('${q.id}')">👁 Show Answer</button>
         </div>
       </div>`;
     }).join('');
 
-  $('tb-browse').innerHTML=`<div class="tag-bar">${pills}</div><div class="q-grid">${cards}</div>`;
+  $('tb-browse').innerHTML=`
+    <div class="tag-bar">${pills}</div>
+    <div class="tag-bar">${diffPills}</div>
+    ${ptags.length?`<div class="tag-bar">${ptPills}</div>`:''}
+    <div class="q-grid">${cards}</div>`;
   if(window.MathJax)MathJax.typesetPromise([$('tb-browse')]).catch(()=>{});
 }
 
@@ -382,6 +502,40 @@ function toggleBA(id){
   if(btn)btn.textContent=on?'🙈 Hide Answer':'👁 Show Answer';
 }
 function setBrowseTag(t){browseTag=t;renderBrowse()}
+function setBrowseDiff(d){browseDiff=d;renderBrowse()}
+function setBrowsePersonalTag(t){browsePersonalTag=t;renderBrowse()}
+
+function showAddPTag(qid){
+  const wrap=document.getElementById('ptag-input-'+qid);
+  if(!wrap)return;
+  const showing=wrap.style.display!=='none';
+  wrap.style.display=showing?'none':'block';
+  if(!showing){const inp=document.getElementById('ptag-val-'+qid);if(inp){inp.value='';inp.focus()}}
+}
+async function addPTag(qid){
+  const inp=document.getElementById('ptag-val-'+qid);if(!inp)return;
+  const tag=inp.value.trim().replace(/^#/,'');
+  if(!tag){toast('Enter a tag name.');return}
+  const cur=personalTags[qid]||[];
+  if(cur.includes(tag)){toast('Tag already added.');return}
+  const newTags=[...cur,tag];
+  personalTags[qid]=newTags;
+  try{
+    await fbDb.collection('students').doc(fbUser.uid).collection('personalTags').doc(qid).set({tags:newTags});
+    toast('Tag added.');
+  }catch(e){toast('Save failed: '+e.message,3000);return}
+  renderBrowse();
+}
+async function removePersonalTag(qid,tidx){
+  const cur=personalTags[qid]||[];
+  const newTags=cur.filter((_,i)=>i!==tidx);
+  if(newTags.length===0)delete personalTags[qid];else personalTags[qid]=newTags;
+  try{
+    if(newTags.length===0){await fbDb.collection('students').doc(fbUser.uid).collection('personalTags').doc(qid).delete();}
+    else{await fbDb.collection('students').doc(fbUser.uid).collection('personalTags').doc(qid).set({tags:newTags});}
+  }catch(e){toast('Remove failed: '+e.message,3000)}
+  renderBrowse();
+}
 
 // ══════════════════════ PRACTICE ══════════════════════
 function renderPractice(){
@@ -392,33 +546,63 @@ function renderPractice(){
 
 function renderIdle(){
   const tags=getAllTags();
+  const ptags=[...new Set(Object.values(personalTags).flat())].sort();
   if(questions.length===0){
-    $('tb-practice').innerHTML=`<div class="idle-wrap"><div class="idle-title">No Questions Yet</div><div class="idle-sub">The teacher hasn't synced any questions. Check back later.</div></div>`;
+    $('tb-practice').innerHTML=`<div class="prac-idle-wrap"><div class="idle-wrap"><div class="idle-title">No Questions Yet</div><div class="idle-sub">The teacher hasn't synced any questions. Check back later.</div></div></div>`;
     return;
   }
+  // teacher tag rows
   const tagRows=tags.map(t=>{
     const s=tagStats[t];
     const badge=s?.pct!=null
       ?`<span class="d-badge ${s.pct>60?'d-easy':s.pct>36?'d-medium':'d-hard'}">${s.pct}%</span>`
       :`<span class="d-badge d-new">New</span>`;
-    return`<label class="tag-radio-row"><input type="radio" name="ptag" value="${esc(t)}" style="accent-color:var(--blue)">&nbsp;${esc(t)}&nbsp;${badge}</label>`;
+    return`<label class="tag-radio-row"><input type="radio" name="ptag" value="t:${esc(t)}" style="accent-color:var(--blue)">&nbsp;${esc(t)}&nbsp;${badge}</label>`;
+  }).join('');
+  // personal tag rows (purple)
+  const ptagRows=ptags.map(t=>`<label class="tag-radio-row" style="border-color:#ce93d8"><input type="radio" name="ptag" value="p:${esc(t)}" style="accent-color:var(--purple)">&nbsp;<span style="color:var(--purple)">★ ${esc(t)}</span></label>`).join('');
+
+  // difficulty pills
+  const diffPills=['all','easy','medium','hard'].map(d=>{
+    const cls=d==='all'?`tpill all${practiceDiff==='all'?' on':''}`:`tpill d-${d}${practiceDiff===d?' on':''}`;
+    return`<button class="${cls}" onclick="setPracticeDiff('${d}')">${d==='all'?'All Levels':diffLabel(d)}</button>`;
   }).join('');
 
   $('tb-practice').innerHTML=`
-  <div class="idle-wrap">
+  <div class="prac-idle-wrap"><div class="idle-wrap">
     <div class="idle-title">Ready to Practice?</div>
     <div class="idle-sub">Choose how you want to practise. The adaptive mode focuses on your weakest topics.</div>
     <div class="mode-opts">
       <button class="mode-btn${practiceMode==='all'?' on':''}" onclick="setPM('all')">📚 All Questions (random)</button>
       <button class="mode-btn${practiceMode==='adaptive'?' on':''}" onclick="setPM('adaptive')">🎯 Adaptive — focus weak areas</button>
-      ${tags.length?`<button class="mode-btn${practiceMode==='tag'?' on':''}" onclick="setPM('tag')">🏷 By Hashtag</button>`:''}
+      ${tags.length||ptags.length?`<button class="mode-btn${practiceMode==='tag'?' on':''}" onclick="setPM('tag')">🏷 By Hashtag</button>`:''}
     </div>
-    ${practiceMode==='tag'&&tags.length?`<div class="tag-select-wrap">${tagRows}</div>`:''}
+    ${practiceMode==='tag'&&(tags.length||ptags.length)?`<div class="tag-select-wrap">${tagRows}${ptagRows}</div>`:''}
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-lt);margin-bottom:7px">DIFFICULTY</div>
+      <div class="tag-bar" style="justify-content:center">${diffPills}</div>
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-lt);margin-bottom:7px">FEEDBACK MODE</div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="mode-btn${practiceRevealMode==='instant'?' on':''}" style="flex:1;padding:9px;font-size:12px" onclick="setRevealMode('instant')">💬 Instant Feedback</button>
+        <button class="mode-btn${practiceRevealMode==='end'?' on':''}" style="flex:1;padding:9px;font-size:12px" onclick="setRevealMode('end')">📝 Show at End</button>
+      </div>
+    </div>
+    <div style="margin-bottom:22px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-lt);margin-bottom:7px">⏱ TIME LIMIT</div>
+      <div class="tag-bar" style="justify-content:center">
+        ${[0,10,20,30,45,60].map(m=>`<button class="tpill all${practiceTimelimit===m?' on':''}" onclick="setTimeLimit(${m})">${m===0?'None':m+' min'}</button>`).join('')}
+      </div>
+    </div>
     <button class="start-btn" onclick="startSession()">Start →</button>
-  </div>`;
+  </div></div>`;
 }
 
 function setPM(mode){practiceMode=mode;renderIdle()}
+function setPracticeDiff(d){practiceDiff=d;renderIdle()}
+function setRevealMode(m){practiceRevealMode=m;renderIdle()}
+function setTimeLimit(m){practiceTimelimit=m;renderIdle()}
 
 function startSession(){
   let pool=[];
@@ -429,10 +613,19 @@ function startSession(){
   }else{
     const sel=document.querySelector('input[name="ptag"]:checked');
     if(!sel){toast('Select a hashtag first.');return}
-    pool=questions.filter(q=>(q.tags||[]).includes(sel.value)).sort(()=>Math.random()-.5);
+    const val=sel.value;
+    if(val.startsWith('p:')){
+      const pt=val.slice(2);
+      pool=questions.filter(q=>(personalTags[q.id]||[]).includes(pt)).sort(()=>Math.random()-.5);
+    }else{
+      const tt=val.startsWith('t:')?val.slice(2):val;
+      pool=questions.filter(q=>(q.tags||[]).includes(tt)).sort(()=>Math.random()-.5);
+    }
   }
-  if(!pool.length){toast('No questions for this selection.');return}
-  P={phase:'question',queue:pool,idx:0,chosen:null,results:[]};
+  if(practiceDiff!=='all')pool=pool.filter(q=>getDiff(q)===practiceDiff);
+  if(!pool.length){toast('No questions match this selection & difficulty.');return}
+  P={phase:'question',queue:pool,answers:new Array(pool.length).fill(null),idx:0,chosen:null,results:[]};
+  startTimer();
   renderQuestion();
 }
 
@@ -459,38 +652,84 @@ function buildAdaptive(qs,stats,n=20){
 function renderQuestion(){
   const q=P.queue[P.idx];
   if(!q){P.phase='end';renderEnd();return}
-  const pct=Math.round((P.idx/P.queue.length)*100);
+
+  const savedAns=P.answers[P.idx];
+  // Show feedback if: instant mode after answering, OR navigated to already-answered question
+  const showFeedback=savedAns && !savedAns.skipped;
+  const displayChosen=showFeedback?savedAns.chosen:P.chosen;
+  const inFeedbackPhase=(P.phase==='feedback'&&P.idx===P._activeIdx)||showFeedback;
+
+  const diff=getDiff(q);
+  const diffBadge=diff!=='new'?`<span class="d-badge d-${diff}">${diffLabel(diff)}</span>`:'';
   const tags=(q.tags||[]).map(t=>`<span class="qtag">${esc(t)}</span>`).join('');
+  const ptgs=(personalTags[q.id]||[]).map(t=>`<span class="ptag">${esc(t)}</span>`).join('');
+
+  // answered count & unanswered check
+  const answeredCount=P.answers.filter(a=>a&&!a.skipped).length;
+  const skippedCount=P.answers.filter(a=>a&&a.skipped).length;
+  const unansweredCount=P.answers.filter(a=>!a).length;
 
   const btnCls=l=>{
-    if(P.phase==='feedback'){
+    if(inFeedbackPhase){
       if(l===q.answer)return' reveal';
-      if(l===P.chosen&&l!==q.answer)return' c-wrong';
+      if(l===displayChosen&&l!==q.answer)return' c-wrong';
     }return'';
   };
 
-  const fbHTML=P.phase==='feedback'?`
-    <div class="fb-icon">${P.chosen===q.answer?'✅':'❌'}</div>
-    <div class="fb-text"><b>${P.chosen===q.answer?'Correct!':'Wrong'}</b>
-    ${P.chosen!==q.answer&&q.answer?`Correct answer: <strong>${esc(q.answer)}</strong>`:''}
+  const fbHTML=inFeedbackPhase?`
+    <div class="fb-icon">${displayChosen===q.answer?'✅':'❌'}</div>
+    <div class="fb-text"><b>${displayChosen===q.answer?'Correct!':'Wrong'}</b>
+    ${displayChosen!==q.answer&&q.answer?`Correct answer: <strong>${esc(q.answer)}</strong>`:''}
     ${q.notes?`<br><small style="color:var(--text-lt)">${esc(q.notes)}</small>`:''}
     </div>`:'';
 
+  // Sidebar
+  const sidebarNums=P.queue.map((sq,si)=>{
+    const sa=P.answers[si];
+    let cls='q-num-btn';
+    if(si===P.idx)cls+=' qn-current';
+    else if(sa&&sa.skipped)cls+=' qn-skipped';
+    else if(sa&&sa.isCorrect)cls+=' qn-correct';
+    else if(sa&&!sa.isCorrect)cls+=' qn-wrong';
+    return`<button class="${cls}" onclick="goToQ(${si})" title="Q${si+1}">${si+1}</button>`;
+  }).join('');
+
+  // Timer bar
+  const timerHTML=practiceTimelimit>0?`
+    <div class="prac-timer${timerLeft<=60?' timer-warn':''}">
+      <span>⏱</span><span class="timer-val" id="timer-val">${fmtTimer(timerLeft)}</span>
+      <span style="font-size:11px;color:var(--text-lt);margin-left:4px">${practiceTimelimit} min limit</span>
+    </div>`:'';
+
+  // next btn label
+  const hasMore=unansweredCount>0||(savedAns&&!savedAns.skipped&&nextUnanswered()!==-1);
+  const nextLabel=nextUnanswered()===-1?'See Results →':'Next →';
+  const showNextBtn=inFeedbackPhase||savedAns;
+
   $('tb-practice').innerHTML=`
-  <div class="prog-bar-wrap">
-    <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
-    <div class="prog-text">${P.idx+1} / ${P.queue.length}</div>
-  </div>
-  <div class="pcard">
-    ${q.image?`<img class="pcard-img" src="${q.image}">`:''}
-    <div class="pcard-body">
-      ${tags?`<div class="pcard-tags">${tags}</div>`:''}
-      ${q.text?`<div class="pcard-text">${esc(q.text)}</div>`:''}
-      <div class="abtn-grid">
-        ${['A','B','C','D'].map(l=>`<button class="abtn${btnCls(l)}" onclick="pickAns('${l}')" ${P.phase==='feedback'?'disabled':''}>${l}</button>`).join('')}
+  <div class="prac-layout">
+    <div class="prac-sidebar">${sidebarNums}</div>
+    <div class="prac-main">
+      ${timerHTML}
+      <div class="prog-bar-wrap">
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${Math.round(((answeredCount+skippedCount)/P.queue.length)*100)}%"></div></div>
+        <div class="prog-text">${answeredCount+skippedCount} / ${P.queue.length}</div>
       </div>
-      <div class="feedback-box${P.phase==='feedback'?' on':''}">${fbHTML}</div>
-      ${P.phase==='feedback'?`<button class="next-btn" onclick="nextQ()">${P.idx+1>=P.queue.length?'See Results →':'Next →'}</button>`:''}
+      <div class="pcard">
+        ${q.image?`<img class="pcard-img" src="${q.image}">`:''}
+        <div class="pcard-body">
+          <div class="pcard-tags" style="display:flex;flex-wrap:wrap;align-items:center;gap:5px">
+            ${tags}${diffBadge}${ptgs?`<span style="width:2px"></span>${ptgs}`:''}
+          </div>
+          ${q.text?`<div class="pcard-text">${esc(q.text)}</div>`:''}
+          <div class="abtn-grid">
+            ${['A','B','C','D'].map(l=>`<button class="abtn${btnCls(l)}" onclick="pickAns('${l}')" ${inFeedbackPhase||savedAns?'disabled':''}>${l}</button>`).join('')}
+          </div>
+          <div class="feedback-box${inFeedbackPhase?' on':''}">${fbHTML}</div>
+          ${showNextBtn?`<button class="next-btn" onclick="nextQ()">${nextLabel}</button>`:''}
+          ${!savedAns&&!inFeedbackPhase?`<div style="margin-top:10px;text-align:right"><button class="skip-btn" onclick="skipQ()">Skip →</button></div>`:''}
+        </div>
+      </div>
     </div>
   </div>`;
 
@@ -498,27 +737,72 @@ function renderQuestion(){
 }
 
 async function pickAns(l){
-  if(P.phase!=='question')return;
-  P.chosen=l;P.phase='feedback';
+  if(P.answers[P.idx])return; // already answered
   const q=P.queue[P.idx];
   const ok=l===q.answer;
+  P.answers[P.idx]={chosen:l,isCorrect:ok};
   P.results.push({qid:q.id,chosen:l,isCorrect:ok,tags:q.tags||[]});
-  await recordAttempt(q.id,l,ok,q.tags||[]);
+  recordAttempt(q.id,l,ok,q.tags||[]);
+  if(practiceRevealMode==='instant'){
+    P.chosen=l;P.phase='feedback';P._activeIdx=P.idx;
+    renderQuestion();
+  }else{
+    // end mode: no feedback shown, jump to next unanswered
+    const nxt=nextUnanswered();
+    if(nxt===-1){stopTimer();P.phase='end';renderEnd();}
+    else{P.idx=nxt;P.chosen=null;P.phase='question';renderQuestion();}
+  }
+}
+
+function nextUnanswered(){
+  // search from current+1 forward, then wrap
+  for(let i=P.idx+1;i<P.queue.length;i++){if(!P.answers[i])return i}
+  for(let i=0;i<P.idx;i++){if(!P.answers[i])return i}
+  return -1; // all answered/skipped
+}
+function nextQ(){
+  const nxt=nextUnanswered();
+  if(nxt===-1){stopTimer();P.phase='end';renderEnd();}
+  else{P.idx=nxt;P.chosen=null;P.phase='question';renderQuestion();}
+}
+function skipQ(){
+  if(P.answers[P.idx])return;
+  P.answers[P.idx]={skipped:true};
+  const nxt=nextUnanswered();
+  if(nxt===-1){stopTimer();P.phase='end';renderEnd();}
+  else{P.idx=nxt;P.chosen=null;P.phase='question';renderQuestion();}
+}
+function goToQ(idx){
+  if(idx<0||idx>=P.queue.length)return;
+  P.idx=idx;
+  const sa=P.answers[idx];
+  P.chosen=sa&&!sa.skipped?sa.chosen:null;
+  P.phase=sa&&!sa.skipped?'feedback':'question';
+  P._activeIdx=idx;
   renderQuestion();
 }
-
-function nextQ(){
-  P.idx++;P.chosen=null;
-  if(P.idx>=P.queue.length){P.phase='end';renderEnd();}
-  else{P.phase='question';renderQuestion();}
+function fmtTimer(s){const m=Math.floor(s/60);return`${m}:${(s%60).toString().padStart(2,'0')}`}
+function startTimer(){
+  stopTimer();
+  if(!practiceTimelimit)return;
+  timerLeft=practiceTimelimit*60;
+  timerInterval=setInterval(()=>{
+    timerLeft=Math.max(0,timerLeft-1);
+    const el=document.getElementById('timer-val');
+    if(el){el.textContent=fmtTimer(timerLeft);if(timerLeft<=60)el.closest('.prac-timer').classList.add('timer-warn')}
+    if(timerLeft===0){stopTimer();P.answers.forEach((a,i)=>{if(!a)P.answers[i]={skipped:true}});P.phase='end';renderEnd();}
+  },1000);
 }
+function stopTimer(){clearInterval(timerInterval);timerInterval=null}
 
 function renderEnd(){
-  const n=P.results.length, c=P.results.filter(r=>r.isCorrect).length;
+  stopTimer();
+  const answered=P.answers.filter(a=>a&&!a.skipped);
+  const n=answered.length, c=answered.filter(a=>a.isCorrect).length;
+  const skipped=P.answers.filter(a=>a&&a.skipped).length;
   const pct=n>0?Math.round(c/n*100):0;
   const col=pct>60?'var(--green)':pct>36?'var(--orange)':'var(--red)';
 
-  // Session tag performance
   const stags={};
   P.results.forEach(r=>(r.tags||[]).forEach(t=>{
     if(!stags[t])stags[t]={n:0,c:0};
@@ -537,13 +821,34 @@ function renderEnd(){
       <div class="weak-pct">${w.pct}%</div>
     </div>`).join('')}
   </div>`
-  :`<div class="end-sub" style="color:var(--green)">No weak areas this session — excellent! 🎉</div>`;
+  :`<div class="end-sub" style="color:var(--green)">No weak areas — excellent! 🎉</div>`;
+
+  // Question review cards
+  const reviewCards=P.queue.map((q,i)=>{
+    const a=P.answers[i];
+    if(!a){return'';}
+    const cls=a.skipped?'rc-skipped':a.isCorrect?'rc-correct':'rc-wrong';
+    const status=a.skipped?'Skipped':a.isCorrect?'✓ Correct':'✗ Wrong';
+    const ansInfo=a.skipped
+      ?`Ans: ${esc(q.answer||'?')}`
+      :(a.isCorrect?`Ans: ${esc(a.chosen)}`:`You: ${esc(a.chosen)} • Ans: ${esc(q.answer||'?')}`);
+    return`<div class="rcard ${cls}">
+      <div class="rcard-head">
+        <span class="rcard-qnum">Q${i+1}</span>
+        <span class="rcard-status">${status}</span>
+        ${q.text?`<span style="font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(q.text).slice(0,60)}</span>`:''}
+        <span class="rcard-ans-info">${ansInfo}</span>
+      </div>
+      ${q.image?`<img class="rcard-img" src="${q.image}" loading="lazy">`:''}
+    </div>`;
+  }).join('');
 
   $('tb-practice').innerHTML=`
+  <div class="prac-idle-wrap">
   <div class="end-wrap">
     <div class="score-ring" style="border-color:${col}">
       <div class="score-pct" style="color:${col}">${pct}%</div>
-      <div class="score-frac">${c} / ${n}</div>
+      <div class="score-frac">${c} / ${n}${skipped?` · ${skipped} skipped`:''}</div>
     </div>
     <div class="end-title">${pct>=70?'Well done! 🌟':pct>=40?'Keep going! 💪':'More practice needed 📖'}</div>
     ${weakHTML}
@@ -551,7 +856,20 @@ function renderEnd(){
       <button class="ebtn primary" onclick="P.phase='idle';renderPractice()">Practice Again</button>
       <button class="ebtn secondary" onclick="goTab('stats')">View My Stats</button>
     </div>
+  </div>
+  <div class="review-section">
+    <button class="review-toggle" onclick="toggleReview(this)">▼ Review Questions (${P.queue.length})</button>
+    <div id="review-list" style="display:none">${reviewCards}</div>
+  </div>
   </div>`;
+}
+function toggleReview(btn){
+  const list=document.getElementById('review-list');
+  if(!list)return;
+  const open=list.style.display==='none';
+  list.style.display=open?'block':'none';
+  btn.textContent=(open?'▲':'▼')+` Review Questions (${P.queue.length})`;
+  if(open&&window.MathJax)MathJax.typesetPromise([list]).catch(()=>{});
 }
 
 // ══════════════════════ STATS ══════════════════════
