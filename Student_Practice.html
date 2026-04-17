@@ -126,9 +126,11 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .q-num-btn{width:36px;height:30px;border-radius:6px;font-size:11px;font-weight:700;border:1.5px solid var(--border);background:#fff;color:var(--text-lt);transition:all var(--trans);display:flex;align-items:center;justify-content:center}
 .q-num-btn:hover{border-color:var(--blue);color:var(--blue)}
 .qn-current{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}
-.qn-correct{background:var(--green-lt)!important;color:var(--green)!important;border-color:var(--green)!important}
-.qn-wrong{background:var(--red-lt)!important;color:var(--red)!important;border-color:var(--red)!important}
-.qn-skipped{background:var(--orange-lt)!important;color:var(--orange)!important;border-color:var(--orange)!important}
+.qn-answered{background:#fff9c4!important;color:#b8860b!important;border-color:#f9a825!important}
+.qn-skipped{background:#e8e8e8!important;color:#9e9e9e!important;border-color:#bdbdbd!important}
+.finish-btn{width:36px;height:30px;border-radius:6px;font-size:13px;font-weight:700;border:1.5px solid var(--green);background:var(--green-lt);color:var(--green);transition:all var(--trans);display:flex;align-items:center;justify-content:center}
+.finish-btn:hover{background:var(--green);color:#fff}
+@media(max-width:480px){.finish-btn{width:28px;height:26px;font-size:11px}}
 .prac-timer{display:flex;align-items:center;gap:8px;background:#fff;border-radius:8px;padding:8px 14px;margin-bottom:14px;box-shadow:var(--shadow)}
 .timer-val{font-size:17px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;min-width:44px}
 .timer-warn .timer-val{color:var(--red)}
@@ -689,10 +691,10 @@ function renderQuestion(){
     let cls='q-num-btn';
     if(si===P.idx)cls+=' qn-current';
     else if(sa&&sa.skipped)cls+=' qn-skipped';
-    else if(sa&&sa.isCorrect)cls+=' qn-correct';
-    else if(sa&&!sa.isCorrect)cls+=' qn-wrong';
+    else if(sa)cls+=' qn-answered';
+    // unanswered = default white
     return`<button class="${cls}" onclick="goToQ(${si})" title="Q${si+1}">${si+1}</button>`;
-  }).join('');
+  }).join('')+`<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);width:100%;display:flex;justify-content:center"><button class="finish-btn" onclick="finishSession()" title="Finish & Submit">✓</button></div>`;
 
   // Timer bar
   const timerHTML=practiceTimelimit>0?`
@@ -749,7 +751,7 @@ async function pickAns(l){
   }else{
     // end mode: no feedback shown, jump to next unanswered
     const nxt=nextUnanswered();
-    if(nxt===-1){stopTimer();P.phase='end';renderEnd();}
+    if(nxt===-1){toast('All questions done — press ✓ to submit.',3000);renderQuestion();}
     else{P.idx=nxt;P.chosen=null;P.phase='question';renderQuestion();}
   }
 }
@@ -762,16 +764,17 @@ function nextUnanswered(){
 }
 function nextQ(){
   const nxt=nextUnanswered();
-  if(nxt===-1){stopTimer();P.phase='end';renderEnd();}
+  if(nxt===-1){toast('All questions done — press ✓ to submit.',3000);renderQuestion();}
   else{P.idx=nxt;P.chosen=null;P.phase='question';renderQuestion();}
 }
 function skipQ(){
   if(P.answers[P.idx])return;
   P.answers[P.idx]={skipped:true};
   const nxt=nextUnanswered();
-  if(nxt===-1){stopTimer();P.phase='end';renderEnd();}
+  if(nxt===-1){toast('All questions done — press ✓ to submit.',3000);renderQuestion();}
   else{P.idx=nxt;P.chosen=null;P.phase='question';renderQuestion();}
 }
+function finishSession(){stopTimer();P.phase='end';renderEnd();}
 function goToQ(idx){
   if(idx<0||idx>=P.queue.length)return;
   P.idx=idx;
