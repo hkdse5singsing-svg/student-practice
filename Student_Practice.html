@@ -240,6 +240,11 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .tpill.ptpill.on{background:var(--purple);color:#fff}
 .add-ptag-btn{padding:2px 8px;border-radius:10px;font-size:10px;border:1.5px dashed #ce93d8;color:var(--purple);background:none;font-weight:600;transition:background var(--trans)}
 .add-ptag-btn:hover{background:var(--purple-lt)}
+/* tag category grouping */
+.tag-cat-head{font-size:10px;font-weight:700;color:var(--text-lt);letter-spacing:.6px;margin:8px 0 5px;text-transform:uppercase}
+.tag-cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:4px}
+@media(min-width:500px){.tag-cat-grid{grid-template-columns:repeat(3,1fr)}}
+.pill-sep{font-size:11px;font-weight:700;color:var(--text-lt);padding:0 4px;align-self:center;flex-shrink:0}
 .ptag-del{background:none;border:none;color:var(--purple);font-size:10px;cursor:pointer;padding:0;line-height:1;opacity:.65}
 .ptag-del:hover{opacity:1}
 .ptag-input-row{display:flex;gap:5px;margin-top:5px}
@@ -290,7 +295,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 <!-- ── APP SCREEN ── -->
 <div class="screen" id="s-app">
   <div id="logo-bar">
-    <img class="logo-img" src="data:image/png;base64,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" alt="一點就明 葉Sir數學">
+    <img class="logo-img" src="data:image/png;base64,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" alt="一點就明 葉Sir數學">
     <div class="logo-contact">
       <a href="https://wa.me/85294390766" target="_blank">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -418,6 +423,14 @@ function getDiff(q){
   return q.correctPct>60?'easy':q.correctPct>36?'medium':'hard';
 }
 function diffLabel(d){return d==='new'?'New':d.charAt(0).toUpperCase()+d.slice(1)}
+// Tag prefix helpers: y/ = year, s/ = school, no prefix = topic
+function tagDisplay(t){return t.replace(/^[ys]\//,'')}
+function tagCategory(t){return t.startsWith('y/')?'year':t.startsWith('s/')?'school':'topic'}
+function groupTagsByCategory(tags){
+  const g={year:[],school:[],topic:[]};
+  tags.forEach(t=>g[tagCategory(t)].push(t));
+  return g;
+}
 
 // ══════════════════════ TABS ══════════════════════
 function goTab(tab){
@@ -445,9 +458,13 @@ function renderBrowse(){
   if(browseDiff!=='all')qs=qs.filter(q=>getDiff(q)===browseDiff);
   if(browsePersonalTag!=='all')qs=qs.filter(q=>(personalTags[q.id]||[]).includes(browsePersonalTag));
 
-  // tag pills row
+  // tag pills row — grouped by category
+  const tg=groupTagsByCategory(tags);
+  const makePill=(t)=>`<button class="tpill tag${browseTag===t?' on':''}" onclick="setBrowseTag('${esc(t)}')">${esc(tagDisplay(t))}</button>`;
   const pills=`<button class="tpill all${browseTag==='all'?' on':''}" onclick="setBrowseTag('all')">All (${questions.length})</button>`
-    +tags.map(t=>`<button class="tpill tag${browseTag===t?' on':''}" onclick="setBrowseTag('${esc(t)}')">${esc(t)}</button>`).join('');
+    +(tg.year.length?`<span class="pill-sep">📅</span>`+tg.year.map(makePill).join(''):'')
+    +(tg.school.length?`<span class="pill-sep">🏫</span>`+tg.school.map(makePill).join(''):'')
+    +(tg.topic.length?`<span class="pill-sep">📚</span>`+tg.topic.map(makePill).join(''):'')
 
   // difficulty pills row
   const diffPills=`<button class="tpill all${browseDiff==='all'?' on':''}" onclick="setBrowseDiff('all')">All Levels</button>`
@@ -462,7 +479,7 @@ function renderBrowse(){
   const cards=qs.length===0
     ?`<div class="empty-msg"><b>No questions</b>No questions match this filter.</div>`
     :qs.map(q=>{
-      const tgs=(q.tags||[]).map(t=>`<span class="qtag">${esc(t)}</span>`).join('');
+      const tgs=(q.tags||[]).map(t=>`<span class="qtag">${esc(tagDisplay(t))}</span>`).join('');
       const qptags=personalTags[q.id]||[];
       const ptgs=qptags.map((t,ti)=>`<span class="ptag">${esc(t)}<button class="ptag-del" title="Remove" onclick="removePersonalTag('${q.id}',${ti})">✕</button></span>`).join('');
       const diff=getDiff(q);
@@ -553,16 +570,23 @@ function renderIdle(){
     $('tb-practice').innerHTML=`<div class="prac-idle-wrap"><div class="idle-wrap"><div class="idle-title">No Questions Yet</div><div class="idle-sub">The teacher hasn't synced any questions. Check back later.</div></div></div>`;
     return;
   }
-  // teacher tag rows
-  const tagRows=tags.map(t=>{
+  // teacher tags — grouped by category, multi-column grid
+  const tg=groupTagsByCategory(tags);
+  const makeTagRow=(t)=>{
     const s=tagStats[t];
     const badge=s?.pct!=null
       ?`<span class="d-badge ${s.pct>60?'d-easy':s.pct>36?'d-medium':'d-hard'}">${s.pct}%</span>`
       :`<span class="d-badge d-new">New</span>`;
-    return`<label class="tag-radio-row"><input type="radio" name="ptag" value="t:${esc(t)}" style="accent-color:var(--blue)">&nbsp;${esc(t)}&nbsp;${badge}</label>`;
-  }).join('');
+    return`<label class="tag-radio-row" style="font-size:12px;padding:7px 10px"><input type="radio" name="ptag" value="t:${esc(t)}" style="accent-color:var(--blue)">&nbsp;${esc(tagDisplay(t))}&nbsp;${badge}</label>`;
+  };
+  const catSection=(label,arr)=>arr.length?`
+    <div class="tag-cat-head">${label}</div>
+    <div class="tag-cat-grid">${arr.map(makeTagRow).join('')}</div>`:'' ;
+  const tagRows=catSection('📅 By Year',tg.year)+catSection('🏫 By School',tg.school)+catSection('📚 By Topic',tg.topic);
   // personal tag rows (purple)
-  const ptagRows=ptags.map(t=>`<label class="tag-radio-row" style="border-color:#ce93d8"><input type="radio" name="ptag" value="p:${esc(t)}" style="accent-color:var(--purple)">&nbsp;<span style="color:var(--purple)">★ ${esc(t)}</span></label>`).join('');
+  const ptagRows=ptags.length?`<div class="tag-cat-head" style="color:var(--purple)">★ My Personal Tags</div><div class="tag-cat-grid">`
+    +ptags.map(t=>`<label class="tag-radio-row" style="border-color:#ce93d8;font-size:12px;padding:7px 10px"><input type="radio" name="ptag" value="p:${esc(t)}" style="accent-color:var(--purple)">&nbsp;<span style="color:var(--purple)">${esc(t)}</span></label>`).join('')
+    +`</div>`:'';
 
   // difficulty pills
   const diffPills=['all','easy','medium','hard'].map(d=>{
@@ -579,7 +603,7 @@ function renderIdle(){
       <button class="mode-btn${practiceMode==='adaptive'?' on':''}" onclick="setPM('adaptive')">🎯 Adaptive — focus weak areas</button>
       ${tags.length||ptags.length?`<button class="mode-btn${practiceMode==='tag'?' on':''}" onclick="setPM('tag')">🏷 By Hashtag</button>`:''}
     </div>
-    ${practiceMode==='tag'&&(tags.length||ptags.length)?`<div class="tag-select-wrap">${tagRows}${ptagRows}</div>`:''}
+    ${practiceMode==='tag'&&(tags.length||ptags.length)?`<div style="text-align:left;margin-bottom:4px;max-width:400px;margin-left:auto;margin-right:auto">${tagRows}${ptagRows}</div>`:''}
     <div style="margin-bottom:14px">
       <div style="font-size:11px;font-weight:600;color:var(--text-lt);margin-bottom:7px">DIFFICULTY</div>
       <div class="tag-bar" style="justify-content:center">${diffPills}</div>
@@ -663,7 +687,7 @@ function renderQuestion(){
 
   const diff=getDiff(q);
   const diffBadge=diff!=='new'?`<span class="d-badge d-${diff}">${diffLabel(diff)}</span>`:'';
-  const tags=(q.tags||[]).map(t=>`<span class="qtag">${esc(t)}</span>`).join('');
+  const tags=(q.tags||[]).map(t=>`<span class="qtag">${esc(tagDisplay(t))}</span>`).join('');
   const ptgs=(personalTags[q.id]||[]).map(t=>`<span class="ptag">${esc(t)}</span>`).join('');
 
   // answered count & unanswered check
@@ -892,7 +916,7 @@ function renderStats(){
       const d=s.pct>60?'easy':s.pct>36?'medium':'hard';
       const col=s.pct>60?'var(--green)':s.pct>36?'var(--orange)':'var(--red)';
       return`<div class="ts-row">
-        <div class="ts-tag">${esc(tag)}</div>
+        <div class="ts-tag">${esc(tagDisplay(tag))}</div>
         <div class="ts-bg"><div class="ts-fill" style="width:${s.pct}%;background:${col}"></div></div>
         <div class="ts-pct" style="color:${col}">${s.pct}%</div>
         <span class="d-badge d-${d}">${d}</span>
