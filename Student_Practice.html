@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Student Practice</title>
+<script>MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea']},svg:{fontCache:'global'}}</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  TEACHER SETUP — paste your Firebase config values here
+//  (Firebase Console → Project Settings → Your apps → SDK)
+// ═══════════════════════════════════════════════════════════
+const FB_CONFIG = {
+  apiKey:            "YAIzaSyAjzBiWw_RqlcuahX1FWFy3wzj0rTBv7Sg",
+  authDomain:        "insightscope-mcdatabank.firebaseapp.com",
+  projectId:         "insightscope-mcdatabank",
+  storageBucket:     "insightscope-mcdatabank.firebasestorage.app",
+  messagingSenderId: "486979004708",
+  appId:             "1:486979004708:web:2d7ffb682122fb8a596bb1"
+};
+// ═══════════════════════════════════════════════════════════
+</script>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1565c0;--blue-dk:#0d47a1;--blue-lt:#e3f2fd;
+  --green:#2e7d32;--green-lt:#e8f5e9;--green-md:#43a047;
+  --red:#c62828;--red-lt:#ffebee;
+  --orange:#e65100;--orange-lt:#fff3e0;
+  --teal:#00695c;--teal-lt:#e0f2f1;--teal-md:#00897b;
+  --bg:#f0f2f5;--white:#fff;--border:#e0e0e0;
+  --text:#212121;--text-lt:#757575;
+  --r:8px;--shadow:0 2px 10px rgba(0,0,0,.11);--trans:.15s ease;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;background:var(--bg);color:var(--text);line-height:1.5}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+input,textarea{font-family:inherit;font-size:13px;outline:none}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.on{display:flex}
+
+/* ── SETUP SCREEN ── */
+#s-setup{align-items:center;justify-content:center;padding:30px 16px;background:var(--bg)}
+.setup-box{background:#fff;border-radius:14px;padding:30px;max-width:560px;width:100%;box-shadow:var(--shadow)}
+.setup-title{font-size:19px;font-weight:700;color:var(--blue);margin-bottom:6px}
+.setup-sub{font-size:13px;color:var(--text-lt);margin-bottom:20px;line-height:1.7}
+.setup-step{display:flex;gap:12px;margin-bottom:14px}
+.snum{background:var(--blue);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+.stext{font-size:13px;line-height:1.65}
+.stext code{background:#f5f5f5;padding:1px 5px;border-radius:3px;font-size:12px;font-family:monospace}
+.stext a{color:var(--blue)}
+.setup-note{margin-top:18px;background:var(--blue-lt);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--text);line-height:1.65}
+
+/* ── AUTH SCREEN ── */
+#s-auth{align-items:center;justify-content:center;padding:30px 16px;background:linear-gradient(135deg,#1565c0,#1976d2)}
+.auth-box{background:#fff;border-radius:16px;padding:40px 34px;max-width:360px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.22);text-align:center}
+.auth-icon{font-size:50px;margin-bottom:14px}
+.auth-title{font-size:22px;font-weight:700;margin-bottom:8px}
+.auth-sub{font-size:13px;color:var(--text-lt);margin-bottom:28px;line-height:1.6}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:13px 20px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;color:var(--text);background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.1);transition:background var(--trans)}
+.google-btn:hover{background:#f5f5f5}
+.google-icon{width:20px;height:20px;flex-shrink:0}
+
+/* ── APP SCREEN ── */
+#s-app{background:var(--bg)}
+#hdr{background:var(--blue);color:#fff;height:52px;padding:0 18px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);flex-shrink:0}
+#hdr-title{font-size:15px;font-weight:700;flex:1}
+.hdr-user{display:flex;align-items:center;gap:8px;font-size:12px}
+.hdr-name{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hbtn{padding:5px 12px;border-radius:16px;border:1.5px solid rgba(255,255,255,.5);color:#fff;font-size:11px;font-weight:600;transition:background var(--trans);white-space:nowrap}
+.hbtn:hover{background:rgba(255,255,255,.18)}
+
+/* ── TABS ── */
+#tab-nav{background:#fff;display:flex;border-bottom:2px solid var(--border);flex-shrink:0;position:sticky;top:52px;z-index:99}
+.tbtn{flex:1;padding:13px 6px;font-size:13px;font-weight:600;color:var(--text-lt);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all var(--trans)}
+.tbtn.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tbtn:hover:not(.on){background:#fafafa}
+#tab-body{flex:1;overflow-y:auto}
+
+/* ── BROWSE ── */
+#tb-browse{padding:16px 18px}
+.tag-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tpill{padding:4px 12px;border-radius:14px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid;transition:all var(--trans)}
+.tpill.all{border-color:var(--blue);color:var(--blue)}
+.tpill.all.on{background:var(--blue);color:#fff}
+.tpill.tag{border-color:var(--teal);color:var(--teal)}
+.tpill.tag.on{background:var(--teal);color:#fff}
+.q-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.q-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.q-grid{grid-template-columns:1fr}}
+.qcard{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+.qcard-img{width:100%;max-height:200px;object-fit:contain;background:#fafafa;border-bottom:1px solid var(--border)}
+.qcard-body{padding:11px;flex:1;display:flex;flex-direction:column;gap:7px}
+.qcard-text{font-size:13px;line-height:1.6}
+.qcard-tags{display:flex;flex-wrap:wrap;gap:4px}
+.qtag{padding:2px 7px;border-radius:10px;font-size:10px;background:var(--teal-lt);color:var(--teal);font-weight:600}
+.qcard-ans{background:var(--green-lt);border-radius:5px;padding:7px 10px;font-size:12px;color:var(--green);font-weight:600;display:none}
+.qcard-ans.on{display:block}
+.show-ans{padding:4px 11px;border-radius:12px;border:1.5px solid var(--green-md);color:var(--green);font-size:11px;font-weight:600;align-self:flex-start;transition:all var(--trans)}
+.show-ans:hover{background:var(--green-lt)}
+.empty-msg{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-lt)}
+.empty-msg b{display:block;font-size:15px;margin-bottom:6px;color:var(--text)}
+
+/* ── PRACTICE ── */
+#tb-practice{padding:20px;max-width:660px;margin:0 auto}
+/* Idle */
+.idle-wrap{text-align:center;padding:40px 10px}
+.idle-title{font-size:20px;font-weight:700;margin-bottom:10px}
+.idle-sub{font-size:13px;color:var(--text-lt);margin-bottom:28px;line-height:1.65}
+.mode-opts{display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto 24px}
+.mode-btn{padding:13px 18px;border-radius:10px;border:2px solid var(--border);font-size:13px;font-weight:600;color:var(--text);background:#fff;text-align:left;display:flex;align-items:center;gap:12px;transition:all var(--trans)}
+.mode-btn.on,.mode-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
+.tag-select-wrap{max-width:300px;margin:0 auto 20px;display:flex;flex-direction:column;gap:7px}
+.tag-radio-row{display:flex;align-items:center;gap:10px;padding:9px 13px;border:2px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all var(--trans)}
+.tag-radio-row:has(input:checked){border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
+.start-btn{padding:13px 36px;background:var(--blue);color:#fff;border-radius:10px;font-size:14px;font-weight:700;transition:background var(--trans)}
+.start-btn:hover{background:var(--blue-dk)}
+/* Question */
+.prog-bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.prog-bar-bg{flex:1;height:6px;background:#ddd;border-radius:3px;overflow:hidden}
+.prog-bar-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .3s}
+.prog-text{font-size:12px;color:var(--text-lt);white-space:nowrap}
+.pcard{background:#fff;border-radius:12px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+.pcard-img{width:100%;max-height:300px;object-fit:contain;background:#fafafa;border-bottom:1px solid var(--border)}
+.pcard-body{padding:20px}
+.pcard-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.pcard-text{font-size:14px;line-height:1.7;margin-bottom:20px}
+.abtn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.abtn{padding:14px;border-radius:8px;border:2px solid var(--border);font-size:14px;font-weight:700;background:#fff;transition:all var(--trans)}
+.abtn:hover:not([disabled]){border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
+.abtn[disabled]{cursor:default}
+.abtn.c-correct{border-color:var(--green);background:var(--green-lt);color:var(--green)}
+.abtn.c-wrong{border-color:var(--red);background:var(--red-lt);color:var(--red)}
+.abtn.reveal{border-color:var(--green);background:var(--green-lt);color:var(--green)}
+.feedback-box{display:none;align-items:center;gap:12px;background:#f9f9f9;border-radius:8px;padding:13px 15px;margin-top:14px}
+.feedback-box.on{display:flex}
+.fb-icon{font-size:26px;flex-shrink:0}
+.fb-text{font-size:13px;line-height:1.55}
+.fb-text b{display:block;font-size:14px;margin-bottom:2px}
+.next-btn{width:100%;padding:13px;background:var(--blue);color:#fff;border-radius:8px;font-size:14px;font-weight:700;margin-top:14px;transition:background var(--trans)}
+.next-btn:hover{background:var(--blue-dk)}
+/* End screen */
+.end-wrap{text-align:center;padding:30px 10px}
+.score-ring{width:110px;height:110px;border-radius:50%;border:5px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 18px}
+.score-pct{font-size:28px;font-weight:700}
+.score-frac{font-size:11px;color:var(--text-lt)}
+.end-title{font-size:18px;font-weight:700;margin-bottom:5px}
+.end-sub{font-size:13px;color:var(--text-lt);margin-bottom:22px}
+.weak-section{text-align:left;margin-bottom:22px}
+.weak-title{font-size:13px;font-weight:700;margin-bottom:10px}
+.weak-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.weak-pill{padding:3px 9px;border-radius:10px;font-size:11px;font-weight:700;background:var(--red-lt);color:var(--red);min-width:80px;text-align:center}
+.weak-bg{flex:1;height:6px;background:#eee;border-radius:3px;overflow:hidden}
+.weak-bar{height:100%;border-radius:3px}
+.weak-pct{font-size:11px;color:var(--text-lt);min-width:34px;text-align:right}
+.end-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ebtn{padding:11px 22px;border-radius:8px;font-size:13px;font-weight:600;transition:background var(--trans)}
+.ebtn.primary{background:var(--blue);color:#fff}
+.ebtn.primary:hover{background:var(--blue-dk)}
+.ebtn.secondary{background:#f0f0f0;color:var(--text)}
+.ebtn.secondary:hover{background:#e0e0e0}
+
+/* ── STATS ── */
+#tb-stats{padding:18px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:480px){.stat-grid{grid-template-columns:repeat(3,1fr)}}
+.stat-tile{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--shadow);text-align:center}
+.stat-num{font-size:26px;font-weight:700;color:var(--blue)}
+.stat-lbl{font-size:11px;color:var(--text-lt);margin-top:2px}
+.stats-hd{font-size:14px;font-weight:700;margin-bottom:12px}
+.ts-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:8px;padding:11px 14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.ts-tag{font-size:12px;font-weight:700;color:var(--teal);min-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ts-bg{flex:1;height:8px;background:#eee;border-radius:4px;overflow:hidden}
+.ts-fill{height:100%;border-radius:4px;transition:width .4s}
+.ts-pct{font-size:12px;font-weight:700;min-width:38px;text-align:right}
+.d-badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.d-easy{background:var(--green-lt);color:var(--green)}
+.d-medium{background:var(--orange-lt);color:var(--orange)}
+.d-hard{background:var(--red-lt);color:var(--red)}
+.d-new{background:#f0f0f0;color:var(--text-lt)}
+.ts-count{font-size:11px;color:var(--text-lt);min-width:52px;text-align:right}
+.stats-empty{text-align:center;padding:60px 20px;color:var(--text-lt)}
+.stats-empty-icon{font-size:40px;margin-bottom:12px}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(0,0,0,.82);color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;opacity:0;transition:all .25s;z-index:9999;pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ── LOADING OVERLAY ── */
+#loader{position:fixed;inset:0;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;z-index:500;font-size:14px;color:var(--text-lt);display:none}
+#loader.on{display:flex}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+<div id="loader" class="on">Loading…</div>
+
+<!-- ── SETUP SCREEN ── -->
+<div class="screen" id="s-setup">
+  <div class="setup-box">
+    <div class="setup-title">⚠️ Firebase Not Configured</div>
+    <div class="setup-sub">The teacher needs to fill in the Firebase config at the top of this HTML file before sharing it with students. Here's how:</div>
+    <div class="setup-step"><div class="snum">1</div><div class="stext">Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → open your project → <strong>Project Settings</strong>.</div></div>
+    <div class="setup-step"><div class="snum">2</div><div class="stext">Scroll down to <strong>Your apps</strong>, click the web app icon, copy the <code>firebaseConfig</code> values.</div></div>
+    <div class="setup-step"><div class="snum">3</div><div class="stext">Open <code>Student_Practice.html</code> in any text editor. Find the <code>FB_CONFIG</code> block near the top and paste in each value.</div></div>
+    <div class="setup-step"><div class="snum">4</div><div class="stext">Upload the file to <strong>GitHub Pages</strong> or <strong>Firebase Hosting</strong>. Students open that URL in Chrome or Edge.</div></div>
+    <div class="setup-note">💡 Also enable <strong>Google Sign-in</strong> in Firebase Console → Authentication → Sign-in method, and add your hosting domain to the Authorised domains list.</div>
+  </div>
+</div>
+
+<!-- ── AUTH SCREEN ── -->
+<div class="screen" id="s-auth">
+  <div class="auth-box">
+    <div class="auth-icon">📚</div>
+    <div class="auth-title">Student Practice</div>
+    <div class="auth-sub">Sign in with your Google account to practice questions and track your progress.</div>
+    <button class="google-btn" onclick="doSignIn()">
+      <svg class="google-icon" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.6 4 24 4 16.3 4 9.7 8.4 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.5 0 10.5-2.1 14.3-5.5l-6.6-5.6C29.8 34.8 27 36 24 36c-5.2 0-9.6-3.3-11.3-8H6.1C9.4 37.5 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.8l6.6 5.6C37.5 41.8 44 37 44 24c0-1.3-.1-2.7-.4-3.9z"/></svg>
+      Sign in with Google
+    </button>
+  </div>
+</div>
+
+<!-- ── APP SCREEN ── -->
+<div class="screen" id="s-app">
+  <div id="hdr">
+    <div id="hdr-title">📚 Student Practice</div>
+    <div class="hdr-user">
+      <span class="hdr-name" id="hdr-name"></span>
+      <button class="hbtn" onclick="doSignOut()">Sign Out</button>
+    </div>
+  </div>
+  <div id="tab-nav">
+    <button class="tbtn on" id="tbn-browse"   onclick="goTab('browse')">Browse</button>
+    <button class="tbtn"    id="tbn-practice" onclick="goTab('practice')">Practice</button>
+    <button class="tbtn"    id="tbn-stats"    onclick="goTab('stats')">My Stats</button>
+  </div>
+  <div id="tab-body">
+    <div id="tb-browse"></div>
+    <div id="tb-practice" style="display:none"></div>
+    <div id="tb-stats"    style="display:none"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════ GLOBALS ══════════════════════
+let fbAuth=null, fbDb=null, fbUser=null;
+let questions=[], attempts=[], tagStats={};
+let curTab='browse', browseTag='all', practiceMode='all';
+// Practice session state
+let P={phase:'idle',queue:[],idx:0,chosen:null,results:[]};
+
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function toast(msg,ms=2600){const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),ms)}
+function loader(on){$('loader').classList.toggle('on',on)}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on')}
+
+// ══════════════════════ INIT ══════════════════════
+window.addEventListener('load',()=>{
+  loader(false);
+  const c=FB_CONFIG;
+  if(!c||c.apiKey==='YOUR_API_KEY'){showScreen('s-setup');return}
+  try{
+    firebase.initializeApp(c);
+    fbAuth=firebase.auth();
+    fbDb=firebase.firestore();
+    fbAuth.onAuthStateChanged(onAuth);
+  }catch(e){showScreen('s-setup');console.error(e)}
+});
+
+function onAuth(user){
+  if(user){
+    fbUser=user;
+    $('hdr-name').textContent=user.displayName||user.email;
+    showScreen('s-app');
+    loadData();
+  }else{
+    fbUser=null;
+    showScreen('s-auth');
+  }
+}
+
+// ══════════════════════ AUTH ══════════════════════
+function doSignIn(){
+  const p=new firebase.auth.GoogleAuthProvider();
+  fbAuth.signInWithPopup(p).catch(e=>toast('Sign-in failed: '+e.message,4000));
+}
+function doSignOut(){fbAuth.signOut()}
+
+// ══════════════════════ DATA ══════════════════════
+async function loadData(){
+  loader(true);
+  try{
+    const [qSnap,aSnap]=await Promise.all([
+      fbDb.collection('mc_questions').get(),
+      fbDb.collection('students').doc(fbUser.uid).collection('attempts')
+        .orderBy('timestamp','desc').limit(600).get()
+    ]);
+    questions=qSnap.docs.map(d=>({id:d.id,...d.data()}));
+    attempts=aSnap.docs.map(d=>({id:d.id,...d.data()}));
+    computeTagStats();
+  }catch(e){toast('Error loading: '+e.message,4000)}
+  loader(false);
+  renderTab(curTab);
+}
+
+async function recordAttempt(qid,chosen,isCorrect,tags){
+  const doc={questionId:qid,answer:chosen,isCorrect,tags:tags||[],
+    timestamp:firebase.firestore.FieldValue.serverTimestamp()};
+  try{
+    const ref=await fbDb.collection('students').doc(fbUser.uid).collection('attempts').add(doc);
+    attempts.unshift({id:ref.id,...doc,timestamp:new Date()});
+    computeTagStats();
+  }catch(e){console.warn('attempt save failed',e)}
+}
+
+function computeTagStats(){
+  tagStats={};
+  const allTags=new Set(questions.flatMap(q=>q.tags||[]));
+  allTags.forEach(tag=>{
+    const ta=attempts.filter(a=>(a.tags||[]).includes(tag));
+    const total=ta.length, correct=ta.filter(a=>a.isCorrect).length;
+    tagStats[tag]={total,correct,pct:total>0?Math.round(correct/total*100):null};
+  });
+}
+
+// ══════════════════════ TABS ══════════════════════
+function goTab(tab){
+  ['browse','practice','stats'].forEach(t=>{
+    $('tb-'+t).style.display=t===tab?'':'none';
+    $('tbn-'+t).classList.toggle('on',t===tab);
+  });
+  curTab=tab;renderTab(tab);
+}
+function renderTab(t){
+  if(t==='browse')renderBrowse();
+  else if(t==='practice')renderPractice();
+  else renderStats();
+}
+
+// ══════════════════════ BROWSE ══════════════════════
+function getAllTags(){return[...new Set(questions.flatMap(q=>q.tags||[]))].sort()}
+
+function renderBrowse(){
+  const tags=getAllTags();
+  const qs=browseTag==='all'?questions:questions.filter(q=>(q.tags||[]).includes(browseTag));
+
+  const pills=`<button class="tpill all${browseTag==='all'?' on':''}" onclick="setBrowseTag('all')">All (${questions.length})</button>`
+    +tags.map(t=>`<button class="tpill tag${browseTag===t?' on':''}" onclick="setBrowseTag('${esc(t)}')">${esc(t)}</button>`).join('');
+
+  const cards=qs.length===0
+    ?`<div class="empty-msg"><b>No questions yet</b>Teacher hasn't synced any questions yet.</div>`
+    :qs.map(q=>{
+      const tgs=(q.tags||[]).map(t=>`<span class="qtag">${esc(t)}</span>`).join('');
+      return`<div class="qcard">
+        ${q.image?`<img class="qcard-img" src="${q.image}" loading="lazy">`:''}
+        <div class="qcard-body">
+          ${q.text?`<div class="qcard-text">${esc(q.text)}</div>`:''}
+          ${tgs?`<div class="qcard-tags">${tgs}</div>`:''}
+          <div class="qcard-ans" id="ba-${q.id}">${q.answer?'Answer: '+esc(q.answer):'No answer set'}</div>
+          <button class="show-ans" onclick="toggleBA('${q.id}')">👁 Show Answer</button>
+        </div>
+      </div>`;
+    }).join('');
+
+  $('tb-browse').innerHTML=`<div class="tag-bar">${pills}</div><div class="q-grid">${cards}</div>`;
+  if(window.MathJax)MathJax.typesetPromise([$('tb-browse')]).catch(()=>{});
+}
+
+function toggleBA(id){
+  const el=$('ba-'+id),btn=el?.nextElementSibling;
+  if(!el)return;
+  const on=el.classList.toggle('on');
+  if(btn)btn.textContent=on?'🙈 Hide Answer':'👁 Show Answer';
+}
+function setBrowseTag(t){browseTag=t;renderBrowse()}
+
+// ══════════════════════ PRACTICE ══════════════════════
+function renderPractice(){
+  if(P.phase==='idle')renderIdle();
+  else if(P.phase==='question'||P.phase==='feedback')renderQuestion();
+  else renderEnd();
+}
+
+function renderIdle(){
+  const tags=getAllTags();
+  if(questions.length===0){
+    $('tb-practice').innerHTML=`<div class="idle-wrap"><div class="idle-title">No Questions Yet</div><div class="idle-sub">The teacher hasn't synced any questions. Check back later.</div></div>`;
+    return;
+  }
+  const tagRows=tags.map(t=>{
+    const s=tagStats[t];
+    const badge=s?.pct!=null
+      ?`<span class="d-badge ${s.pct>60?'d-easy':s.pct>36?'d-medium':'d-hard'}">${s.pct}%</span>`
+      :`<span class="d-badge d-new">New</span>`;
+    return`<label class="tag-radio-row"><input type="radio" name="ptag" value="${esc(t)}" style="accent-color:var(--blue)">&nbsp;${esc(t)}&nbsp;${badge}</label>`;
+  }).join('');
+
+  $('tb-practice').innerHTML=`
+  <div class="idle-wrap">
+    <div class="idle-title">Ready to Practice?</div>
+    <div class="idle-sub">Choose how you want to practise. The adaptive mode focuses on your weakest topics.</div>
+    <div class="mode-opts">
+      <button class="mode-btn${practiceMode==='all'?' on':''}" onclick="setPM('all')">📚 All Questions (random)</button>
+      <button class="mode-btn${practiceMode==='adaptive'?' on':''}" onclick="setPM('adaptive')">🎯 Adaptive — focus weak areas</button>
+      ${tags.length?`<button class="mode-btn${practiceMode==='tag'?' on':''}" onclick="setPM('tag')">🏷 By Hashtag</button>`:''}
+    </div>
+    ${practiceMode==='tag'&&tags.length?`<div class="tag-select-wrap">${tagRows}</div>`:''}
+    <button class="start-btn" onclick="startSession()">Start →</button>
+  </div>`;
+}
+
+function setPM(mode){practiceMode=mode;renderIdle()}
+
+function startSession(){
+  let pool=[];
+  if(practiceMode==='all'){
+    pool=[...questions].sort(()=>Math.random()-.5);
+  }else if(practiceMode==='adaptive'){
+    pool=buildAdaptive(questions,tagStats,20);
+  }else{
+    const sel=document.querySelector('input[name="ptag"]:checked');
+    if(!sel){toast('Select a hashtag first.');return}
+    pool=questions.filter(q=>(q.tags||[]).includes(sel.value)).sort(()=>Math.random()-.5);
+  }
+  if(!pool.length){toast('No questions for this selection.');return}
+  P={phase:'question',queue:pool,idx:0,chosen:null,results:[]};
+  renderQuestion();
+}
+
+function buildAdaptive(qs,stats,n=20){
+  if(!qs.length)return[];
+  const wqs=qs.map(q=>{
+    const tags=q.tags||[];
+    const w=tags.length===0?0.5:Math.max(...tags.map(t=>{
+      const s=stats[t];
+      return(!s||s.total===0)?1.0:Math.max(1-(s.pct/100),0.1);
+    }));
+    return{q,w};
+  });
+  const total=wqs.reduce((s,x)=>s+x.w,0);
+  const out=[];
+  for(let i=0;i<n;i++){
+    let r=Math.random()*total,acc=0;
+    for(const{q,w}of wqs){acc+=w;if(r<=acc){out.push(q);break}}
+    if(out.length<i+1)out.push(qs[i%qs.length]);
+  }
+  return out;
+}
+
+function renderQuestion(){
+  const q=P.queue[P.idx];
+  if(!q){P.phase='end';renderEnd();return}
+  const pct=Math.round((P.idx/P.queue.length)*100);
+  const tags=(q.tags||[]).map(t=>`<span class="qtag">${esc(t)}</span>`).join('');
+
+  const btnCls=l=>{
+    if(P.phase==='feedback'){
+      if(l===q.answer)return' reveal';
+      if(l===P.chosen&&l!==q.answer)return' c-wrong';
+    }return'';
+  };
+
+  const fbHTML=P.phase==='feedback'?`
+    <div class="fb-icon">${P.chosen===q.answer?'✅':'❌'}</div>
+    <div class="fb-text"><b>${P.chosen===q.answer?'Correct!':'Wrong'}</b>
+    ${P.chosen!==q.answer&&q.answer?`Correct answer: <strong>${esc(q.answer)}</strong>`:''}
+    ${q.notes?`<br><small style="color:var(--text-lt)">${esc(q.notes)}</small>`:''}
+    </div>`:'';
+
+  $('tb-practice').innerHTML=`
+  <div class="prog-bar-wrap">
+    <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+    <div class="prog-text">${P.idx+1} / ${P.queue.length}</div>
+  </div>
+  <div class="pcard">
+    ${q.image?`<img class="pcard-img" src="${q.image}">`:''}
+    <div class="pcard-body">
+      ${tags?`<div class="pcard-tags">${tags}</div>`:''}
+      ${q.text?`<div class="pcard-text">${esc(q.text)}</div>`:''}
+      <div class="abtn-grid">
+        ${['A','B','C','D'].map(l=>`<button class="abtn${btnCls(l)}" onclick="pickAns('${l}')" ${P.phase==='feedback'?'disabled':''}>${l}</button>`).join('')}
+      </div>
+      <div class="feedback-box${P.phase==='feedback'?' on':''}">${fbHTML}</div>
+      ${P.phase==='feedback'?`<button class="next-btn" onclick="nextQ()">${P.idx+1>=P.queue.length?'See Results →':'Next →'}</button>`:''}
+    </div>
+  </div>`;
+
+  if(window.MathJax)MathJax.typesetPromise([$('tb-practice')]).catch(()=>{});
+}
+
+async function pickAns(l){
+  if(P.phase!=='question')return;
+  P.chosen=l;P.phase='feedback';
+  const q=P.queue[P.idx];
+  const ok=l===q.answer;
+  P.results.push({qid:q.id,chosen:l,isCorrect:ok,tags:q.tags||[]});
+  await recordAttempt(q.id,l,ok,q.tags||[]);
+  renderQuestion();
+}
+
+function nextQ(){
+  P.idx++;P.chosen=null;
+  if(P.idx>=P.queue.length){P.phase='end';renderEnd();}
+  else{P.phase='question';renderQuestion();}
+}
+
+function renderEnd(){
+  const n=P.results.length, c=P.results.filter(r=>r.isCorrect).length;
+  const pct=n>0?Math.round(c/n*100):0;
+  const col=pct>60?'var(--green)':pct>36?'var(--orange)':'var(--red)';
+
+  // Session tag performance
+  const stags={};
+  P.results.forEach(r=>(r.tags||[]).forEach(t=>{
+    if(!stags[t])stags[t]={n:0,c:0};
+    stags[t].n++;if(r.isCorrect)stags[t].c++;
+  }));
+  const weak=Object.entries(stags)
+    .map(([t,s])=>({t,pct:Math.round(s.c/s.n*100),n:s.n}))
+    .filter(x=>x.pct<60).sort((a,b)=>a.pct-b.pct).slice(0,5);
+
+  const weakHTML=weak.length?`
+  <div class="weak-section">
+    <div class="weak-title">Topics to improve:</div>
+    ${weak.map(w=>`<div class="weak-row">
+      <div class="weak-pill">${esc(w.t)}</div>
+      <div class="weak-bg"><div class="weak-bar" style="width:${w.pct}%;background:${w.pct>36?'var(--orange)':'var(--red)'}"></div></div>
+      <div class="weak-pct">${w.pct}%</div>
+    </div>`).join('')}
+  </div>`
+  :`<div class="end-sub" style="color:var(--green)">No weak areas this session — excellent! 🎉</div>`;
+
+  $('tb-practice').innerHTML=`
+  <div class="end-wrap">
+    <div class="score-ring" style="border-color:${col}">
+      <div class="score-pct" style="color:${col}">${pct}%</div>
+      <div class="score-frac">${c} / ${n}</div>
+    </div>
+    <div class="end-title">${pct>=70?'Well done! 🌟':pct>=40?'Keep going! 💪':'More practice needed 📖'}</div>
+    ${weakHTML}
+    <div class="end-btns">
+      <button class="ebtn primary" onclick="P.phase='idle';renderPractice()">Practice Again</button>
+      <button class="ebtn secondary" onclick="goTab('stats')">View My Stats</button>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════ STATS ══════════════════════
+function renderStats(){
+  if(!attempts.length){
+    $('tb-stats').innerHTML=`<div class="stats-empty"><div class="stats-empty-icon">📊</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">No data yet</div><div>Complete some practice sessions to see your stats here.</div></div>`;
+    return;
+  }
+  const tot=attempts.length, cor=attempts.filter(a=>a.isCorrect).length;
+  const ovPct=Math.round(cor/tot*100);
+  const uniq=new Set(attempts.map(a=>a.questionId)).size;
+
+  const rows=Object.entries(tagStats)
+    .filter(([,s])=>s.total>0)
+    .sort((a,b)=>a[1].pct-b[1].pct)
+    .map(([tag,s])=>{
+      const d=s.pct>60?'easy':s.pct>36?'medium':'hard';
+      const col=s.pct>60?'var(--green)':s.pct>36?'var(--orange)':'var(--red)';
+      return`<div class="ts-row">
+        <div class="ts-tag">${esc(tag)}</div>
+        <div class="ts-bg"><div class="ts-fill" style="width:${s.pct}%;background:${col}"></div></div>
+        <div class="ts-pct" style="color:${col}">${s.pct}%</div>
+        <span class="d-badge d-${d}">${d}</span>
+        <div class="ts-count">${s.correct}/${s.total}</div>
+      </div>`;
+    }).join('');
+
+  $('tb-stats').innerHTML=`
+  <div class="stat-grid">
+    <div class="stat-tile"><div class="stat-num">${tot}</div><div class="stat-lbl">Attempts</div></div>
+    <div class="stat-tile"><div class="stat-num">${ovPct}%</div><div class="stat-lbl">Overall Correct</div></div>
+    <div class="stat-tile"><div class="stat-num">${uniq}</div><div class="stat-lbl">Questions Seen</div></div>
+  </div>
+  <div class="stats-hd">Performance by Hashtag</div>
+  ${rows||'<div style="color:var(--text-lt);font-size:13px">No tagged questions attempted yet.</div>'}`;
+}
+</script>
+</body>
+</html>
