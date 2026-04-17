@@ -331,7 +331,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 let fbAuth=null, fbDb=null, fbUser=null;
 let questions=[], attempts=[], tagStats={};
 let curTab='browse', browseTag='all', browseDiff='all', browsePersonalTag='all';
-let practiceMode='all', practiceDiff='all';
+let practiceMode='all', practiceDiff='all', practiceTag='';
 let practiceRevealMode='instant'; // 'instant' | 'end'
 let practiceTimelimit=0; // minutes, 0=no limit
 let timerInterval=null, timerLeft=0;
@@ -573,11 +573,12 @@ function renderIdle(){
   // teacher tags — grouped by category, multi-column grid
   const tg=groupTagsByCategory(tags);
   const makeTagRow=(t)=>{
+    const val=`t:${t}`;
     const s=tagStats[t];
     const badge=s?.pct!=null
       ?`<span class="d-badge ${s.pct>60?'d-easy':s.pct>36?'d-medium':'d-hard'}">${s.pct}%</span>`
       :`<span class="d-badge d-new">New</span>`;
-    return`<label class="tag-radio-row" style="font-size:12px;padding:7px 10px"><input type="radio" name="ptag" value="t:${esc(t)}" style="accent-color:var(--blue)">&nbsp;${esc(tagDisplay(t))}&nbsp;${badge}</label>`;
+    return`<label class="tag-radio-row" style="font-size:12px;padding:7px 10px"><input type="radio" name="ptag" value="${esc(val)}"${practiceTag===val?' checked':''} onchange="practiceTag=this.value" style="accent-color:var(--blue)">&nbsp;${esc(tagDisplay(t))}&nbsp;${badge}</label>`;
   };
   const catSection=(label,arr)=>arr.length?`
     <div class="tag-cat-head">${label}</div>
@@ -585,7 +586,7 @@ function renderIdle(){
   const tagRows=catSection('📅 By Year',tg.year)+catSection('🏫 By School',tg.school)+catSection('📚 By Topic',tg.topic);
   // personal tag rows (purple)
   const ptagRows=ptags.length?`<div class="tag-cat-head" style="color:var(--purple)">★ My Personal Tags</div><div class="tag-cat-grid">`
-    +ptags.map(t=>`<label class="tag-radio-row" style="border-color:#ce93d8;font-size:12px;padding:7px 10px"><input type="radio" name="ptag" value="p:${esc(t)}" style="accent-color:var(--purple)">&nbsp;<span style="color:var(--purple)">${esc(t)}</span></label>`).join('')
+    +ptags.map(t=>{const val=`p:${t}`;return`<label class="tag-radio-row" style="border-color:#ce93d8;font-size:12px;padding:7px 10px"><input type="radio" name="ptag" value="${esc(val)}"${practiceTag===val?' checked':''} onchange="practiceTag=this.value" style="accent-color:var(--purple)">&nbsp;<span style="color:var(--purple)">${esc(t)}</span></label>`;}).join('')
     +`</div>`:'';
 
   // difficulty pills
@@ -637,14 +638,12 @@ function startSession(){
   }else if(practiceMode==='adaptive'){
     pool=buildAdaptive(questions,tagStats,20);
   }else{
-    const sel=document.querySelector('input[name="ptag"]:checked');
-    if(!sel){toast('Select a hashtag first.');return}
-    const val=sel.value;
-    if(val.startsWith('p:')){
-      const pt=val.slice(2);
+    if(!practiceTag){toast('Select a hashtag first.');return}
+    if(practiceTag.startsWith('p:')){
+      const pt=practiceTag.slice(2);
       pool=questions.filter(q=>(personalTags[q.id]||[]).includes(pt)).sort(()=>Math.random()-.5);
     }else{
-      const tt=val.startsWith('t:')?val.slice(2):val;
+      const tt=practiceTag.startsWith('t:')?practiceTag.slice(2):practiceTag;
       pool=questions.filter(q=>(q.tags||[]).includes(tt)).sort(()=>Math.random()-.5);
     }
   }
@@ -680,8 +679,8 @@ function renderQuestion(){
   if(!q){P.phase='end';renderEnd();return}
 
   const savedAns=P.answers[P.idx];
-  // Show feedback if: instant mode after answering, OR navigated to already-answered question
-  const showFeedback=savedAns && !savedAns.skipped;
+  const isAnswered=savedAns && !savedAns.skipped; // actually answered (not just skipped)
+  const showFeedback=isAnswered;
   const displayChosen=showFeedback?savedAns.chosen:P.chosen;
   const inFeedbackPhase=(P.phase==='feedback'&&P.idx===P._activeIdx)||showFeedback;
 
@@ -728,9 +727,8 @@ function renderQuestion(){
     </div>`:'';
 
   // next btn label
-  const hasMore=unansweredCount>0||(savedAns&&!savedAns.skipped&&nextUnanswered()!==-1);
   const nextLabel=nextUnanswered()===-1?'See Results →':'Next →';
-  const showNextBtn=inFeedbackPhase||savedAns;
+  const showNextBtn=inFeedbackPhase||isAnswered;
 
   $('tb-practice').innerHTML=`
   <div class="prac-layout">
@@ -749,11 +747,11 @@ function renderQuestion(){
           </div>
           ${q.text?`<div class="pcard-text">${esc(q.text)}</div>`:''}
           <div class="abtn-grid">
-            ${['A','B','C','D'].map(l=>`<button class="abtn${btnCls(l)}" onclick="pickAns('${l}')" ${inFeedbackPhase||savedAns?'disabled':''}>${l}</button>`).join('')}
+            ${['A','B','C','D'].map(l=>`<button class="abtn${btnCls(l)}" onclick="pickAns('${l}')" ${inFeedbackPhase||isAnswered?'disabled':''}>${l}</button>`).join('')}
           </div>
           <div class="feedback-box${inFeedbackPhase?' on':''}">${fbHTML}</div>
           ${showNextBtn?`<button class="next-btn" onclick="nextQ()">${nextLabel}</button>`:''}
-          ${!savedAns&&!inFeedbackPhase?`<div style="margin-top:10px;text-align:right"><button class="skip-btn" onclick="skipQ()">Skip →</button></div>`:''}
+          ${!isAnswered&&!inFeedbackPhase?`<div style="margin-top:10px;text-align:right"><button class="skip-btn" onclick="skipQ()">Skip →</button></div>`:''}
         </div>
       </div>
     </div>
@@ -763,7 +761,7 @@ function renderQuestion(){
 }
 
 async function pickAns(l){
-  if(P.answers[P.idx])return; // already answered
+  if(P.answers[P.idx]&&!P.answers[P.idx].skipped)return; // already answered (not just skipped)
   const q=P.queue[P.idx];
   const ok=l===q.answer;
   P.answers[P.idx]={chosen:l,isCorrect:ok};
@@ -803,8 +801,9 @@ function goToQ(idx){
   if(idx<0||idx>=P.queue.length)return;
   P.idx=idx;
   const sa=P.answers[idx];
-  P.chosen=sa&&!sa.skipped?sa.chosen:null;
-  P.phase=sa&&!sa.skipped?'feedback':'question';
+  const isAnswered=sa&&!sa.skipped;
+  P.chosen=isAnswered?sa.chosen:null;
+  P.phase=isAnswered?'feedback':'question';
   P._activeIdx=idx;
   renderQuestion();
 }
