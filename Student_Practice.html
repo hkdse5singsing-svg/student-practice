@@ -244,6 +244,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .tag-cat-head{font-size:10px;font-weight:700;color:var(--text-lt);letter-spacing:.6px;margin:8px 0 5px;text-transform:uppercase}
 .tag-cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:4px}
 @media(min-width:500px){.tag-cat-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:800px){.tag-cat-grid{grid-template-columns:repeat(5,1fr)}}
 .pill-sep{font-size:11px;font-weight:700;color:var(--text-lt);padding:0 4px;align-self:center;flex-shrink:0}
 .ptag-del{background:none;border:none;color:var(--purple);font-size:10px;cursor:pointer;padding:0;line-height:1;opacity:.65}
 .ptag-del:hover{opacity:1}
@@ -425,7 +426,13 @@ function getDiff(q){
 function diffLabel(d){return d==='new'?'New':d.charAt(0).toUpperCase()+d.slice(1)}
 // Tag prefix helpers: y/ = year, s/ = school, no prefix = topic
 function tagDisplay(t){return t.replace(/^[ys]\//,'')}
-function tagCategory(t){return t.startsWith('y/')?'year':t.startsWith('s/')?'school':'topic'}
+function tagCategory(t){
+  if(t.startsWith('y/'))return'year';
+  if(t.startsWith('s/'))return'school';
+  if(/^\d/.test(t))return'year';
+  if(/[\u4e00-\u9fff\u3400-\u4dbf]/.test(t))return'school';
+  return'topic';
+}
 function groupTagsByCategory(tags){
   const g={year:[],school:[],topic:[]};
   tags.forEach(t=>g[tagCategory(t)].push(t));
