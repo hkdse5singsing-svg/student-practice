@@ -86,7 +86,18 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 #tab-body{flex:1;overflow-y:auto}
 
 /* ── BROWSE ── */
-#tb-browse{padding:16px 18px}
+#tb-browse{display:flex;height:calc(100vh - 104px);overflow:hidden}
+#br-sidebar{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:0}
+#br-main{flex:1;overflow-y:auto;padding:16px 18px}
+.br-sec-title{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-lt);text-transform:uppercase;margin:12px 0 5px;padding-bottom:3px;border-bottom:1px solid var(--border)}
+.br-sec-title:first-child{margin-top:0}
+.br-fpill{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:6px;cursor:pointer;user-select:none;font-size:12px;margin-bottom:2px;transition:background var(--trans);color:var(--text)}
+.br-fpill:hover{background:#f5f5f5}
+.br-fpill.on{background:var(--teal-lt);color:var(--teal)}
+.br-fpill .pname{flex:1;line-height:1.3}
+.br-fpill .cnt{font-size:10px;background:#e0e0e0;color:var(--text-lt);padding:1px 6px;border-radius:9px;font-weight:700;flex-shrink:0}
+.br-fpill.on .cnt{background:var(--teal);color:#fff}
+.br-fpill.all-pill{font-weight:700}
 .tag-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .tpill{padding:4px 12px;border-radius:14px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid;transition:all var(--trans)}
 .tpill.all{border-color:var(--blue);color:var(--blue)}
@@ -332,10 +343,9 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 let fbAuth=null, fbDb=null, fbUser=null;
 let questions=[], attempts=[], tagStats={};
 let curTab='browse', browseTag='all', browseDiff='all', browsePersonalTag='all';
-let practiceMode='all', practiceDiff='all', practiceTag='';
-let practiceRevealMode='instant'; // 'instant' | 'end'
-let practiceTimelimit=0; // minutes, 0=no limit
-let timerInterval=null, timerLeft=0;
+let practiceTags=[], practiceLogic='or', practiceDiff='all';
+let practiceRevealMode='instant';
+let timerInterval=null;
 // Practice session state
 // P.answers[i] = null | {chosen,isCorrect} | {skipped:true}
 let P={phase:'idle',queue:[],answers:[],idx:0,chosen:null,results:[]};
@@ -456,35 +466,48 @@ function renderTab(t){
 // ══════════════════════ BROWSE ══════════════════════
 function getAllTags(){return[...new Set(questions.flatMap(q=>q.tags||[]))].sort()}
 
+function groupTagsForBrowse(tags){
+  const time=[], grouped={}, other=[];
+  tags.forEach(t=>{
+    if(/^\d/.test(t)){time.push(t);return;}
+    const dash=t.indexOf(' - ');
+    if(dash!==-1){const g=t.slice(0,dash);if(!grouped[g])grouped[g]=[];grouped[g].push(t);return;}
+    other.push(t);
+  });
+  return{time,grouped,other};
+}
+
 function renderBrowse(){
   const tags=getAllTags();
   const ptags=[...new Set(Object.values(personalTags).flat())].sort();
 
-  // apply filters
   let qs=browseTag==='all'?[...questions]:questions.filter(q=>(q.tags||[]).includes(browseTag));
   if(browseDiff!=='all')qs=qs.filter(q=>getDiff(q)===browseDiff);
   if(browsePersonalTag!=='all')qs=qs.filter(q=>(personalTags[q.id]||[]).includes(browsePersonalTag));
 
-  // tag pills row — grouped by category
-  const tg=groupTagsByCategory(tags);
-  const makePill=(t)=>`<button class="tpill tag${browseTag===t?' on':''}" onclick="setBrowseTag('${esc(t)}')">${esc(tagDisplay(t))}</button>`;
-  const pills=`<button class="tpill all${browseTag==='all'?' on':''}" onclick="setBrowseTag('all')">All (${questions.length})</button>`
-    +(tg.year.length?`<span class="pill-sep">📅</span>`+tg.year.map(makePill).join(''):'')
-    +(tg.school.length?`<span class="pill-sep">🏫</span>`+tg.school.map(makePill).join(''):'')
-    +(tg.topic.length?`<span class="pill-sep">📚</span>`+tg.topic.map(makePill).join(''):'')
+  const{time,grouped,other}=groupTagsForBrowse(tags);
+  const tagCnt={};tags.forEach(t=>{tagCnt[t]=questions.filter(q=>(q.tags||[]).includes(t)).length});
 
-  // difficulty pills row
+  const fpill=(t,label)=>`<div class="br-fpill${browseTag===t?' on':''}" onclick="setBrowseTag('${esc(t)}')"><span class="pname">${esc(label||t)}</span><span class="cnt">${tagCnt[t]||0}</span></div>`;
+
+  let sidebarHTML=`<div class="br-fpill all-pill${browseTag==='all'?' on':''}" onclick="setBrowseTag('all')"><span class="pname">All Questions</span><span class="cnt">${questions.length}</span></div>`;
+
+  if(time.length){sidebarHTML+=`<div class="br-sec-title">📅 By Time</div>`+time.map(t=>fpill(t)).join('');}
+  Object.keys(grouped).sort().forEach(g=>{
+    sidebarHTML+=`<div class="br-sec-title">📚 ${esc(g)}</div>`+grouped[g].map(t=>fpill(t,t.slice(g.length+3))).join('');
+  });
+  if(other.length){sidebarHTML+=`<div class="br-sec-title">🏷 Other</div>`+other.map(t=>fpill(t)).join('');}
+  if(ptags.length){
+    sidebarHTML+=`<div class="br-sec-title">★ My Tags</div>`
+      +`<div class="br-fpill${browsePersonalTag==='all'?' on':''}" onclick="setBrowsePersonalTag('all')"><span class="pname">All my tags</span></div>`
+      +ptags.map(t=>`<div class="br-fpill${browsePersonalTag===t?' on':''}" onclick="setBrowsePersonalTag('${esc(t)}')"><span class="pname">${esc(t)}</span></div>`).join('');
+  }
+
   const diffPills=`<button class="tpill all${browseDiff==='all'?' on':''}" onclick="setBrowseDiff('all')">All Levels</button>`
     +['easy','medium','hard'].map(d=>`<button class="tpill d-${d}${browseDiff===d?' on':''}" onclick="setBrowseDiff('${d}')">${diffLabel(d)}</button>`).join('');
 
-  // personal tag pills row
-  const ptPills=ptags.length
-    ?`<button class="tpill ptpill${browsePersonalTag==='all'?' on':''}" onclick="setBrowsePersonalTag('all')">★ My Tags</button>`
-      +ptags.map(t=>`<button class="tpill ptpill${browsePersonalTag===t?' on':''}" onclick="setBrowsePersonalTag('${esc(t)}')">${esc(t)}</button>`).join('')
-    :'';
-
   const cards=qs.length===0
-    ?`<div class="empty-msg"><b>No questions</b>No questions match this filter.</div>`
+    ?`<div class="empty-msg"><b>No questions</b><br>No questions match this filter.</div>`
     :qs.map(q=>{
       const tgs=(q.tags||[]).map(t=>`<span class="qtag">${esc(tagDisplay(t))}</span>`).join('');
       const qptags=personalTags[q.id]||[];
@@ -495,29 +518,24 @@ function renderBrowse(){
         ${q.image?`<img class="qcard-img" src="${q.image}" loading="lazy">`:''}
         <div class="qcard-body">
           ${q.text?`<div class="qcard-text">${esc(q.text)}</div>`:''}
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            ${tgs?`<div class="qcard-tags">${tgs}</div>`:''}
-            ${diffBadge}
-          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">${tgs?`<div class="qcard-tags">${tgs}</div>`:''} ${diffBadge}</div>
           ${ptgs?`<div class="qcard-tags" style="margin-top:2px">${ptgs}</div>`:''}
           <div><button class="add-ptag-btn" onclick="showAddPTag('${q.id}')">＋ My Tag</button></div>
-          <div id="ptag-input-${q.id}" style="display:none">
-            <div class="ptag-input-row">
-              <input class="ptag-input" id="ptag-val-${q.id}" placeholder="Tag name…" onkeydown="if(event.key==='Enter')addPTag('${q.id}')">
-              <button onclick="addPTag('${q.id}')" style="padding:4px 11px;border-radius:6px;background:var(--purple);color:#fff;font-size:11px;font-weight:600;border:none;cursor:pointer">Add</button>
-            </div>
-          </div>
+          <div id="ptag-input-${q.id}" style="display:none"><div class="ptag-input-row">
+            <input class="ptag-input" id="ptag-val-${q.id}" placeholder="Tag name…" onkeydown="if(event.key==='Enter')addPTag('${q.id}')">
+            <button onclick="addPTag('${q.id}')" style="padding:4px 11px;border-radius:6px;background:var(--purple);color:#fff;font-size:11px;font-weight:600;border:none;cursor:pointer">Add</button>
+          </div></div>
           <div class="qcard-ans" id="ba-${q.id}">${q.answer?'Answer: '+esc(q.answer):'No answer set'}</div>
           <button class="show-ans" onclick="toggleBA('${q.id}')">👁 Show Answer</button>
-        </div>
-      </div>`;
+        </div></div>`;
     }).join('');
 
   $('tb-browse').innerHTML=`
-    <div class="tag-bar">${pills}</div>
-    <div class="tag-bar">${diffPills}</div>
-    ${ptags.length?`<div class="tag-bar">${ptPills}</div>`:''}
-    <div class="q-grid">${cards}</div>`;
+    <div id="br-sidebar">${sidebarHTML}</div>
+    <div id="br-main">
+      <div class="tag-bar" style="margin-bottom:10px">${diffPills}</div>
+      <div class="q-grid">${cards}</div>
+    </div>`;
   if(window.MathJax)MathJax.typesetPromise([$('tb-browse')]).catch(()=>{});
 }
 
@@ -570,6 +588,35 @@ function renderPractice(){
   else renderEnd();
 }
 
+function groupTagsForPractice(tags){
+  const time=[], grouped={}, other=[];
+  tags.forEach(t=>{
+    if(/^\d/.test(t)){time.push(t);return;}
+    const dash=t.indexOf(' - ');
+    if(dash!==-1){const g=t.slice(0,dash);if(!grouped[g])grouped[g]=[];grouped[g].push(t);return;}
+    other.push(t);
+  });
+  return{time,grouped,other};
+}
+
+function calcEstimatedTime(tags,logic){
+  let pool=buildPracticePool(tags,logic,'all');
+  if(practiceDiff!=='all')pool=pool.filter(q=>getDiff(q)===practiceDiff);
+  return{count:pool.length, mins:Math.ceil(pool.length*1.25)};
+}
+
+function buildPracticePool(tags,logic,diff){
+  if(!tags.length)return[];
+  let pool;
+  if(logic==='or'){
+    pool=questions.filter(q=>tags.some(t=>(q.tags||[]).includes(t)));
+  }else{
+    pool=questions.filter(q=>tags.every(t=>(q.tags||[]).includes(t)));
+  }
+  if(diff!=='all')pool=pool.filter(q=>getDiff(q)===diff);
+  return pool;
+}
+
 function renderIdle(){
   const tags=getAllTags();
   const ptags=[...new Set(Object.values(personalTags).flat())].sort();
@@ -577,109 +624,113 @@ function renderIdle(){
     $('tb-practice').innerHTML=`<div class="prac-idle-wrap"><div class="idle-wrap"><div class="idle-title">No Questions Yet</div><div class="idle-sub">The teacher hasn't synced any questions. Check back later.</div></div></div>`;
     return;
   }
-  // teacher tags — grouped by category, multi-column grid
-  const tg=groupTagsByCategory(tags);
-  const makeTagRow=(t)=>{
-    const val=`t:${t}`;
+  const{time,grouped,other}=groupTagsForPractice(tags);
+
+  const makeChk=(t,label,color)=>{
+    const on=practiceTags.includes(t);
     const s=tagStats[t];
     const badge=s?.pct!=null
       ?`<span class="d-badge ${s.pct>60?'d-easy':s.pct>36?'d-medium':'d-hard'}">${s.pct}%</span>`
       :`<span class="d-badge d-new">New</span>`;
-    return`<label class="tag-radio-row" style="font-size:12px;padding:7px 10px"><input type="radio" name="ptag" value="${esc(val)}"${practiceTag===val?' checked':''} onchange="practiceTag=this.value" style="accent-color:var(--blue)">&nbsp;${esc(tagDisplay(t))}&nbsp;${badge}</label>`;
+    return`<label class="tag-radio-row${on?' on':''}" style="font-size:12px;padding:7px 10px;${on?`border-color:${color||'var(--teal)'};background:var(--teal-lt);color:var(--teal)`:''};cursor:pointer">
+      <input type="checkbox" value="${esc(t)}"${on?' checked':''} onchange="togglePracticeTag('${esc(t)}')" style="accent-color:${color||'var(--teal)'}">
+      &nbsp;${esc(label||t)}&nbsp;${badge}
+    </label>`;
   };
-  const catSection=(label,arr)=>arr.length?`
-    <div class="tag-cat-head">${label}</div>
-    <div class="tag-cat-grid">${arr.map(makeTagRow).join('')}</div>`:'' ;
-  const tagRows=catSection('📅 By Year',tg.year)+catSection('🏫 By School',tg.school)+catSection('📚 By Topic',tg.topic);
-  // personal tag rows (purple)
-  const ptagRows=ptags.length?`<div class="tag-cat-head" style="color:var(--purple)">★ My Personal Tags</div><div class="tag-cat-grid">`
-    +ptags.map(t=>{const val=`p:${t}`;return`<label class="tag-radio-row" style="border-color:#ce93d8;font-size:12px;padding:7px 10px"><input type="radio" name="ptag" value="${esc(val)}"${practiceTag===val?' checked':''} onchange="practiceTag=this.value" style="accent-color:var(--purple)">&nbsp;<span style="color:var(--purple)">${esc(t)}</span></label>`;}).join('')
-    +`</div>`:'';
 
-  // difficulty pills
+  const catSection=(label,arr,color)=>arr.length
+    ?`<div class="tag-cat-head" style="${color?'color:'+color:''}">${label}</div><div class="tag-cat-grid">${arr.map(t=>makeChk(t,t,color)).join('')}</div>`:'';
+
+  const timeRows=catSection('📅 By Time',time,'var(--blue)');
+  let topicRows='';
+  Object.keys(grouped).sort().forEach(g=>{
+    topicRows+=`<div class="tag-cat-head">${esc(g.charAt(0).toUpperCase()+g.slice(1))}</div><div class="tag-cat-grid">`
+      +grouped[g].map(t=>makeChk(t,t.slice(g.length+3))).join('')+`</div>`;
+  });
+  if(other.length)topicRows+=catSection('Other',other);
+  const ptagRows=ptags.length?`<div class="tag-cat-head" style="color:var(--purple)">★ My Personal Tags</div><div class="tag-cat-grid">`
+    +ptags.map(t=>makeChk('p:'+t,t,'var(--purple)')).join('')+`</div>`:'';
+
   const diffPills=['all','easy','medium','hard'].map(d=>{
     const cls=d==='all'?`tpill all${practiceDiff==='all'?' on':''}`:`tpill d-${d}${practiceDiff===d?' on':''}`;
     return`<button class="${cls}" onclick="setPracticeDiff('${d}')">${d==='all'?'All Levels':diffLabel(d)}</button>`;
   }).join('');
 
+  const est=practiceTags.length?calcEstimatedTime(practiceTags,practiceLogic):{count:0,mins:0};
+  const estHTML=practiceTags.length
+    ?`<div style="background:var(--blue-lt);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--blue);font-weight:600">
+        ${est.count} question${est.count!==1?'s':''} selected &nbsp;·&nbsp; ≈ ${est.mins} min
+      </div>`:'';
+
   $('tb-practice').innerHTML=`
   <div class="prac-idle-wrap"><div class="idle-wrap">
     <div class="idle-title">Ready to Practice?</div>
-    <div class="idle-sub">Choose how you want to practise. The adaptive mode focuses on your weakest topics.</div>
-    <div class="mode-opts">
-      <button class="mode-btn${practiceMode==='all'?' on':''}" onclick="setPM('all')">📚 All Questions (random)</button>
-      <button class="mode-btn${practiceMode==='adaptive'?' on':''}" onclick="setPM('adaptive')">🎯 Adaptive — focus weak areas</button>
-      ${tags.length||ptags.length?`<button class="mode-btn${practiceMode==='tag'?' on':''}" onclick="setPM('tag')">🏷 By Hashtag</button>`:''}
+    <div class="idle-sub">Pick the topics you want to practise. Select multiple topics and use AND / OR to combine them.</div>
+
+    <div style="text-align:left;margin-bottom:8px;max-width:500px;margin-left:auto;margin-right:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:700;color:var(--text-lt);text-transform:uppercase;letter-spacing:.6px">SELECT TOPICS</span>
+        <div style="display:flex;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden">
+          <button style="padding:4px 14px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:background var(--trans);${practiceLogic==='or'?'background:var(--teal);color:#fff':'background:#f5f5f5;color:#888'}" onclick="setPracticeLogic('or')">OR</button>
+          <button style="padding:4px 14px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:background var(--trans);${practiceLogic==='and'?'background:var(--blue);color:#fff':'background:#f5f5f5;color:#888'}" onclick="setPracticeLogic('and')">AND</button>
+        </div>
+      </div>
+      ${timeRows}
+      <div class="tag-cat-head" style="margin-top:6px">📚 By Topic</div>
+      ${topicRows}
+      ${ptagRows}
     </div>
-    ${practiceMode==='tag'&&(tags.length||ptags.length)?`<div style="text-align:left;margin-bottom:4px;max-width:400px;margin-left:auto;margin-right:auto">${tagRows}${ptagRows}</div>`:''}
+
+    ${estHTML}
+
     <div style="margin-bottom:14px">
       <div style="font-size:11px;font-weight:600;color:var(--text-lt);margin-bottom:7px">DIFFICULTY</div>
       <div class="tag-bar" style="justify-content:center">${diffPills}</div>
     </div>
-    <div style="margin-bottom:14px">
+    <div style="margin-bottom:22px">
       <div style="font-size:11px;font-weight:600;color:var(--text-lt);margin-bottom:7px">FEEDBACK MODE</div>
       <div style="display:flex;gap:8px;justify-content:center">
         <button class="mode-btn${practiceRevealMode==='instant'?' on':''}" style="flex:1;padding:9px;font-size:12px" onclick="setRevealMode('instant')">💬 Instant Feedback</button>
         <button class="mode-btn${practiceRevealMode==='end'?' on':''}" style="flex:1;padding:9px;font-size:12px" onclick="setRevealMode('end')">📝 Show at End</button>
       </div>
     </div>
-    <div style="margin-bottom:22px">
-      <div style="font-size:11px;font-weight:600;color:var(--text-lt);margin-bottom:7px">⏱ TIME LIMIT</div>
-      <div class="tag-bar" style="justify-content:center">
-        ${[0,10,20,30,45,60].map(m=>`<button class="tpill all${practiceTimelimit===m?' on':''}" onclick="setTimeLimit(${m})">${m===0?'None':m+' min'}</button>`).join('')}
-      </div>
-    </div>
     <button class="start-btn" onclick="startSession()">Start →</button>
   </div></div>`;
 }
 
-function setPM(mode){practiceMode=mode;renderIdle()}
+function togglePracticeTag(t){
+  const idx=practiceTags.indexOf(t);
+  if(idx===-1)practiceTags.push(t);else practiceTags.splice(idx,1);
+  renderIdle();
+}
+function setPracticeLogic(l){practiceLogic=l;renderIdle()}
 function setPracticeDiff(d){practiceDiff=d;renderIdle()}
 function setRevealMode(m){practiceRevealMode=m;renderIdle()}
-function setTimeLimit(m){practiceTimelimit=m;renderIdle()}
 
 function startSession(){
+  if(!practiceTags.length){toast('Select at least one topic first.');return}
   let pool=[];
-  if(practiceMode==='all'){
-    pool=[...questions].sort(()=>Math.random()-.5);
-  }else if(practiceMode==='adaptive'){
-    pool=buildAdaptive(questions,tagStats,20);
-  }else{
-    if(!practiceTag){toast('Select a hashtag first.');return}
-    if(practiceTag.startsWith('p:')){
-      const pt=practiceTag.slice(2);
-      pool=questions.filter(q=>(personalTags[q.id]||[]).includes(pt)).sort(()=>Math.random()-.5);
+  practiceTags.forEach(t=>{
+    if(t.startsWith('p:')){
+      const pt=t.slice(2);
+      questions.filter(q=>(personalTags[q.id]||[]).includes(pt)).forEach(q=>{if(!pool.find(x=>x.id===q.id))pool.push(q)});
     }else{
-      const tt=practiceTag.startsWith('t:')?practiceTag.slice(2):practiceTag;
-      pool=questions.filter(q=>(q.tags||[]).includes(tt)).sort(()=>Math.random()-.5);
+      questions.filter(q=>(q.tags||[]).includes(t)).forEach(q=>{if(!pool.find(x=>x.id===q.id))pool.push(q)});
     }
+  });
+  if(practiceLogic==='and'){
+    pool=pool.filter(q=>practiceTags.every(t=>{
+      if(t.startsWith('p:'))return(personalTags[q.id]||[]).includes(t.slice(2));
+      return(q.tags||[]).includes(t);
+    }));
   }
   if(practiceDiff!=='all')pool=pool.filter(q=>getDiff(q)===practiceDiff);
-  if(!pool.length){toast('No questions match this selection & difficulty.');return}
+  pool=pool.sort(()=>Math.random()-.5);
+  if(!pool.length){toast('No questions match this selection.');return}
   P={phase:'question',queue:pool,answers:new Array(pool.length).fill(null),idx:0,chosen:null,results:[]};
-  startTimer();
   renderQuestion();
 }
 
-function buildAdaptive(qs,stats,n=20){
-  if(!qs.length)return[];
-  const wqs=qs.map(q=>{
-    const tags=q.tags||[];
-    const w=tags.length===0?0.5:Math.max(...tags.map(t=>{
-      const s=stats[t];
-      return(!s||s.total===0)?1.0:Math.max(1-(s.pct/100),0.1);
-    }));
-    return{q,w};
-  });
-  const total=wqs.reduce((s,x)=>s+x.w,0);
-  const out=[];
-  for(let i=0;i<n;i++){
-    let r=Math.random()*total,acc=0;
-    for(const{q,w}of wqs){acc+=w;if(r<=acc){out.push(q);break}}
-    if(out.length<i+1)out.push(qs[i%qs.length]);
-  }
-  return out;
-}
 
 function renderQuestion(){
   const q=P.queue[P.idx];
@@ -726,12 +777,7 @@ function renderQuestion(){
     return`<button class="${cls}" onclick="goToQ(${si})" title="Q${si+1}">${si+1}</button>`;
   }).join('')+`<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);width:100%;display:flex;justify-content:center"><button class="finish-btn" onclick="finishSession()" title="Finish & Submit">✓</button></div>`;
 
-  // Timer bar
-  const timerHTML=practiceTimelimit>0?`
-    <div class="prac-timer${timerLeft<=60?' timer-warn':''}">
-      <span>⏱</span><span class="timer-val" id="timer-val">${fmtTimer(timerLeft)}</span>
-      <span style="font-size:11px;color:var(--text-lt);margin-left:4px">${practiceTimelimit} min limit</span>
-    </div>`:'';
+  const timerHTML='';
 
   // next btn label
   const nextLabel=nextUnanswered()===-1?'See Results →':'Next →';
@@ -813,18 +859,6 @@ function goToQ(idx){
   P.phase=isAnswered?'feedback':'question';
   P._activeIdx=idx;
   renderQuestion();
-}
-function fmtTimer(s){const m=Math.floor(s/60);return`${m}:${(s%60).toString().padStart(2,'0')}`}
-function startTimer(){
-  stopTimer();
-  if(!practiceTimelimit)return;
-  timerLeft=practiceTimelimit*60;
-  timerInterval=setInterval(()=>{
-    timerLeft=Math.max(0,timerLeft-1);
-    const el=document.getElementById('timer-val');
-    if(el){el.textContent=fmtTimer(timerLeft);if(timerLeft<=60)el.closest('.prac-timer').classList.add('timer-warn')}
-    if(timerLeft===0){stopTimer();P.answers.forEach((a,i)=>{if(!a)P.answers[i]={skipped:true}});P.phase='end';renderEnd();}
-  },1000);
 }
 function stopTimer(){clearInterval(timerInterval);timerInterval=null}
 
