@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -11,10 +11,10 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-//  TEACHER SETUP — paste your Firebase config values here
-//  (Firebase Console → Project Settings → Your apps → SDK)
-// ═══════════════════════════════════════════════════════════
+// ????????????????????????????????????????????????????????????
+//  TEACHER SETUP ??paste your Firebase config values here
+//  (Firebase Console ??Project Settings ??Your apps ??SDK)
+// ????????????????????????????????????????????????????????????
 const FB_CONFIG = {
   apiKey:            "AIzaSyAjzBiWw_RqlcuahX1FWFy3wzj0rTBv7Sg",
   authDomain:        "insightscope-mcdatabank.firebaseapp.com",
@@ -23,7 +23,7 @@ const FB_CONFIG = {
   messagingSenderId: "486979004708",
   appId:             "1:486979004708:web:2d7ffb682122fb8a596bb1"
 };
-// ═══════════════════════════════════════════════════════════
+// ????????????????????????????????????????????????????????????
 </script>
 
 <style>
@@ -43,11 +43,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;background:var(-
 button{cursor:pointer;font-family:inherit;border:none;background:none}
 input,textarea{font-family:inherit;font-size:13px;outline:none}
 
-/* ── SCREENS ── */
+/* ?? SCREENS ?? */
 .screen{display:none;min-height:100vh;flex-direction:column}
 .screen.on{display:flex}
 
-/* ── SETUP SCREEN ── */
+/* ?? SETUP SCREEN ?? */
 #s-setup{align-items:center;justify-content:center;padding:30px 16px;background:var(--bg)}
 .setup-box{background:#fff;border-radius:14px;padding:30px;max-width:560px;width:100%;box-shadow:var(--shadow)}
 .setup-title{font-size:19px;font-weight:700;color:var(--blue);margin-bottom:6px}
@@ -59,7 +59,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .stext a{color:var(--blue)}
 .setup-note{margin-top:18px;background:var(--blue-lt);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--text);line-height:1.65}
 
-/* ── AUTH SCREEN ── */
+/* ?? AUTH SCREEN ?? */
 #s-auth{align-items:center;justify-content:center;padding:30px 16px;background:linear-gradient(135deg,#1565c0,#1976d2)}
 .auth-box{background:#fff;border-radius:16px;padding:40px 34px;max-width:360px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.22);text-align:center}
 .auth-icon{font-size:50px;margin-bottom:14px}
@@ -69,7 +69,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .google-btn:hover{background:#f5f5f5}
 .google-icon{width:20px;height:20px;flex-shrink:0}
 
-/* ── APP SCREEN ── */
+/* ?? APP SCREEN ?? */
 #s-app{background:var(--bg)}
 #hdr{background:var(--blue);color:#fff;height:52px;padding:0 18px;display:flex;align-items:center;gap:10px;position:sticky;top:52px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);flex-shrink:0}
 #hdr-title{font-size:15px;font-weight:700;flex:1}
@@ -78,14 +78,14 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .hbtn{padding:5px 12px;border-radius:16px;border:1.5px solid rgba(255,255,255,.5);color:#fff;font-size:11px;font-weight:600;transition:background var(--trans);white-space:nowrap}
 .hbtn:hover{background:rgba(255,255,255,.18)}
 
-/* ── TABS ── */
+/* ?? TABS ?? */
 #tab-nav{background:#fff;display:flex;border-bottom:2px solid var(--border);flex-shrink:0;position:sticky;top:104px;z-index:99}
 .tbtn{flex:1;padding:13px 6px;font-size:13px;font-weight:600;color:var(--text-lt);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all var(--trans)}
 .tbtn.on{color:var(--blue);border-bottom-color:var(--blue)}
 .tbtn:hover:not(.on){background:#fafafa}
 #tab-body{flex:1;overflow-y:auto}
 
-/* ── BROWSE ── */
+/* ?? BROWSE ?? */
 #tb-browse{display:flex;height:calc(100vh - 104px);overflow:hidden}
 #br-sidebar{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:0}
 #br-main{flex:1;overflow-y:auto;padding:16px 18px}
@@ -120,7 +120,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .empty-msg{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-lt)}
 .empty-msg b{display:block;font-size:15px;margin-bottom:6px;color:var(--text)}
 
-/* ── LOGO BAR ── */
+/* ?? LOGO BAR ?? */
 #logo-bar{background:#fff;border-bottom:1px solid var(--border);padding:5px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:sticky;top:0;z-index:101;box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .logo-img{height:42px;width:auto}
 .logo-contact{margin-left:auto;display:flex;gap:14px;align-items:center}
@@ -128,7 +128,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .logo-contact a:hover{color:var(--blue)}
 .logo-contact svg{flex-shrink:0}
 
-/* ── PRACTICE ── */
+/* ?? PRACTICE ?? */
 #tb-practice{padding:0}
 .prac-idle-wrap{padding:20px;max-width:660px;margin:0 auto}
 .prac-layout{display:flex;align-items:flex-start}
@@ -220,7 +220,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .ebtn.secondary{background:#f0f0f0;color:var(--text)}
 .ebtn.secondary:hover{background:#e0e0e0}
 
-/* ── STATS ── */
+/* ?? STATS ?? */
 #tb-stats{padding:18px}
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
 @media(max-width:480px){.stat-grid{grid-template-columns:repeat(3,1fr)}}
@@ -280,7 +280,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .br-clear-btn:hover{background:rgba(255,255,255,.25)}
 /* session time frame banner */
 #sess-timebar{background:var(--blue-lt);border-radius:8px;padding:8px 14px;margin-bottom:14px;font-size:13px;font-weight:600;color:var(--blue);text-align:center}
-/* Stats — two-session report */
+/* Stats ??two-session report */
 #tb-stats{overflow-y:auto}
 .stats-report{padding:0 14px 24px}
 .stats-col-hdr{display:grid;grid-template-columns:1fr 170px 170px;padding:6px 14px 6px 14px;margin-bottom:4px;border-bottom:2px solid var(--border)}
@@ -308,10 +308,10 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 .flag-btn:hover{border-color:#ef9a9a;color:var(--red);background:var(--red-lt)}
 .flag-btn.flagged{border-color:#ef9a9a;color:var(--red);background:var(--red-lt)}
 .flag-indicator{font-size:10px;background:var(--red-lt);color:var(--red);padding:1px 6px;border-radius:8px;font-weight:700}
-/* ── TOAST ── */
+/* ?? TOAST ?? */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(0,0,0,.82);color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;opacity:0;transition:all .25s;z-index:9999;pointer-events:none;white-space:nowrap}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-/* ── LOADING OVERLAY ── */
+/* ?? LOADING OVERLAY ?? */
 #loader{position:fixed;inset:0;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;z-index:500;font-size:14px;color:var(--text-lt);display:none}
 #loader.on{display:flex}
 </style>
@@ -319,25 +319,25 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 <body>
 
 <div id="toast"></div>
-<div id="loader" class="on">Loading…</div>
+<div id="loader" class="on">Loading??/div>
 
-<!-- ── SETUP SCREEN ── -->
+<!-- ?? SETUP SCREEN ?? -->
 <div class="screen" id="s-setup">
   <div class="setup-box">
-    <div class="setup-title">⚠️ Firebase Not Configured</div>
+    <div class="setup-title">?? Firebase Not Configured</div>
     <div class="setup-sub">The teacher needs to fill in the Firebase config at the top of this HTML file before sharing it with students. Here's how:</div>
-    <div class="setup-step"><div class="snum">1</div><div class="stext">Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → open your project → <strong>Project Settings</strong>.</div></div>
+    <div class="setup-step"><div class="snum">1</div><div class="stext">Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> ??open your project ??<strong>Project Settings</strong>.</div></div>
     <div class="setup-step"><div class="snum">2</div><div class="stext">Scroll down to <strong>Your apps</strong>, click the web app icon, copy the <code>firebaseConfig</code> values.</div></div>
     <div class="setup-step"><div class="snum">3</div><div class="stext">Open <code>Student_Practice.html</code> in any text editor. Find the <code>FB_CONFIG</code> block near the top and paste in each value.</div></div>
     <div class="setup-step"><div class="snum">4</div><div class="stext">Upload the file to <strong>GitHub Pages</strong> or <strong>Firebase Hosting</strong>. Students open that URL in Chrome or Edge.</div></div>
-    <div class="setup-note">💡 Also enable <strong>Google Sign-in</strong> in Firebase Console → Authentication → Sign-in method, and add your hosting domain to the Authorised domains list.</div>
+    <div class="setup-note">? Also enable <strong>Google Sign-in</strong> in Firebase Console ??Authentication ??Sign-in method, and add your hosting domain to the Authorised domains list.</div>
   </div>
 </div>
 
-<!-- ── AUTH SCREEN ── -->
+<!-- ?? AUTH SCREEN ?? -->
 <div class="screen" id="s-auth">
   <div class="auth-box">
-    <div class="auth-icon">📚</div>
+    <div class="auth-icon">??</div>
     <div class="auth-title">Student Practice</div>
     <div class="auth-sub">Sign in with your Google account to practice questions and track your progress.</div>
     <button class="google-btn" onclick="doSignIn()">
@@ -347,10 +347,10 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
   </div>
 </div>
 
-<!-- ── APP SCREEN ── -->
+<!-- ?? APP SCREEN ?? -->
 <div class="screen" id="s-app">
   <div id="logo-bar">
-    <img class="logo-img" src="data:image/png;base64,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" alt="一點就明 葉Sir數學">
+    <img class="logo-img" src="data:image/png;base64,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" alt="銝暺停???ir?詨飛">
     <div class="logo-contact">
       <a href="https://wa.me/85294390766" target="_blank">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -363,7 +363,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
     </div>
   </div>
   <div id="hdr">
-    <div id="hdr-title">📚 Student Practice</div>
+    <div id="hdr-title">?? Student Practice</div>
     <div class="hdr-user">
       <span class="hdr-name" id="hdr-name"></span>
       <button class="hbtn" onclick="doSignOut()">Sign Out</button>
@@ -382,7 +382,7 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 </div>
 
 <script>
-// ══════════════════════ GLOBALS ══════════════════════
+// ?????????????????????? GLOBALS ??????????????????????
 let fbAuth=null, fbDb=null, fbUser=null;
 let questions=[], attempts=[], tagStats={};
 let curTab='browse', browseDiff='all', browsePersonalTag='all', browseShowFlagged=false;
@@ -402,7 +402,7 @@ function toast(msg,ms=2600){const t=$('toast');t.textContent=msg;t.classList.add
 function loader(on){$('loader').classList.toggle('on',on)}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on')}
 
-// ══════════════════════ INIT ══════════════════════
+// ?????????????????????? INIT ??????????????????????
 window.addEventListener('load',()=>{
   loader(false);
   const c=FB_CONFIG;
@@ -427,22 +427,22 @@ function onAuth(user){
   }
 }
 
-// ══════════════════════ AUTH ══════════════════════
+// ?????????????????????? AUTH ??????????????????????
 function doSignIn(){
   const p=new firebase.auth.GoogleAuthProvider();
   fbAuth.signInWithPopup(p).catch(e=>toast('Sign-in failed: '+e.message,4000));
 }
 function doSignOut(){fbAuth.signOut()}
 
-// ══════════════════════ DATA ══════════════════════
+// ?????????????????????? DATA ??????????????????????
 async function loadData(){
   loader(true);
-  // Load questions first — must succeed for the app to be usable
+  // Load questions first ??must succeed for the app to be usable
   try{
     const qSnap=await fbDb.collection('mc_questions').get();
     questions=qSnap.docs.map(d=>({id:d.id,...d.data()}));
   }catch(e){toast('Error loading questions: '+e.message,5000);loader(false);renderTab(curTab);return;}
-  // Load user data independently — failures here don't block question display
+  // Load user data independently ??failures here don't block question display
   try{
     const [aSnap,ptSnap]=await Promise.all([
       fbDb.collection('students').doc(fbUser.uid).collection('attempts')
@@ -502,7 +502,7 @@ function groupTagsByCategory(tags){
   return g;
 }
 
-// ══════════════════════ TABS ══════════════════════
+// ?????????????????????? TABS ??????????????????????
 function goTab(tab){
   ['browse','practice','stats'].forEach(t=>{
     $('tb-'+t).style.display=t===tab?'':'none';
@@ -516,7 +516,7 @@ function renderTab(t){
   else renderStats();
 }
 
-// ══════════════════════ BROWSE ══════════════════════
+// ?????????????????????? BROWSE ??????????????????????
 function getAllTags(){return[...new Set(questions.flatMap(q=>q.tags||[]))].sort()}
 
 function groupTagsForBrowse(tags){
@@ -531,6 +531,10 @@ function groupTagsForBrowse(tags){
 }
 
 function renderBrowse(){
+  // Save scroll position before re-rendering
+  const brMain = $('br-main');
+  const scrollPos = brMain ? brMain.scrollTop : 0;
+  
   const tags=getAllTags();
   const ptags=[...new Set(Object.values(personalTags).flat())].sort();
   const{time,grouped,other}=groupTagsForBrowse(tags);
@@ -555,23 +559,23 @@ function renderBrowse(){
   const isSelTag=t=>browseSelectedTags.includes(t);
   const fpill=(t,label)=>{
     const sel = isSelTag(t);
-    const inputHtml = sel ? `<input type="number" min="1" max="${tagCounts[t]}" value="${browseTagCounts[t] || tagCounts[t]}" onchange="setTagCount('${esc(t)}', this.value)" onclick="event.stopPropagation()" style="width:40px;margin-left:5px;font-size:11px;">` : '';
+    const inputHtml = sel ? `<input type="number" min="1" max="${tagCounts[t]}" value="${browseTagCounts[t] || tagCounts[t]}" onchange="setTagCount('${esc(t)}', this.value)" onkeydown="if(event.key==='Enter'){setTagCount('${esc(t)}', this.value);renderBrowse();}" onclick="event.stopPropagation()" style="width:40px;margin-left:5px;font-size:11px;">` : '';
     return `<div class="br-fpill${sel?' on':''}" onclick="toggleBrowseTag('${esc(t)}')">
       <span class="pname">${esc(label||t)}</span><span class="cnt">${tagCounts[t]||0}</span>${inputHtml}</div>`;
   };
 
   let sidebarHTML=`<div class="br-fpill all-pill${browseSelectedTags.length===0?' on':''}" onclick="clearBrowseTags()"><span class="pname">All Questions</span><span class="cnt">${questions.length}</span></div>`;
-  if(time.length){sidebarHTML+=`<div class="br-sec-title">📅 By Time</div>`+time.map(t=>fpill(t)).join('');}
+  if(time.length){sidebarHTML+=`<div class="br-sec-title">?? By Time</div>`+time.map(t=>fpill(t)).join('');}
   Object.keys(grouped).sort().forEach(g=>{
-    sidebarHTML+=`<div class="br-sec-title">📚 ${esc(g)}</div>`+grouped[g].map(t=>fpill(t,t.slice(g.length+3))).join('');
+    sidebarHTML+=`<div class="br-sec-title">?? ${esc(g)}</div>`+grouped[g].map(t=>fpill(t,t.slice(g.length+3))).join('');
   });
-  if(other.length){sidebarHTML+=`<div class="br-sec-title">🏷 Other</div>`+other.map(t=>fpill(t)).join('');}
+  if(other.length){sidebarHTML+=`<div class="br-sec-title">? Other</div>`+other.map(t=>fpill(t)).join('');}
   if(flaggedQuestions.size>0){
-    sidebarHTML+=`<div class="br-sec-title">🚩 Review</div>`
+    sidebarHTML+=`<div class="br-sec-title">? Review</div>`
       +`<div class="br-fpill${browseShowFlagged?' on':''}" style="${browseShowFlagged?'background:var(--red-lt);color:var(--red)':''}" onclick="toggleFlaggedFilter()"><span class="pname">Flagged for Review</span><span class="cnt">${flaggedQuestions.size}</span></div>`;
   }
   if(ptags.length){
-    sidebarHTML+=`<div class="br-sec-title">★ My Tags</div>`
+    sidebarHTML+=`<div class="br-sec-title">??My Tags</div>`
       +ptags.map(t=>`<div class="br-fpill${browsePersonalTag===t?' on':''}" onclick="setBrowsePersonalTag('${esc(t)}')"><span class="pname">${esc(t)}</span></div>`).join('');
   }
 
@@ -583,23 +587,23 @@ function renderBrowse(){
     :qs.map(q=>{
       const tgs=(q.tags||[]).map(t=>`<span class="qtag">${esc(tagDisplay(t))}</span>`).join('');
       const qptags=personalTags[q.id]||[];
-      const ptgs=qptags.map((t,ti)=>`<span class="ptag">${esc(t)}<button class="ptag-del" title="Remove" onclick="removePersonalTag('${q.id}',${ti})">✕</button></span>`).join('');
+      const ptgs=qptags.map((t,ti)=>`<span class="ptag">${esc(t)}<button class="ptag-del" title="Remove" onclick="removePersonalTag('${q.id}',${ti})">??/button></span>`).join('');
       const diff=getDiff(q);
       const diffBadge=diff!=='new'?`<span class="d-badge d-${diff}">${diffLabel(diff)}</span>`:'';
-      const flagBadge=flaggedQuestions.has(q.id)?`<span class="flag-indicator">🚩 Review</span>`:'';
+      const flagBadge=flaggedQuestions.has(q.id)?`<span class="flag-indicator">? Review</span>`:'';
       return`<div class="qcard">
         ${q.image?`<img class="qcard-img" src="${q.image}" loading="lazy">`:''}
         <div class="qcard-body">
           ${q.text?`<div class="qcard-text">${esc(q.text)}</div>`:''}
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">${tgs?`<div class="qcard-tags">${tgs}</div>`:''} ${diffBadge} ${flagBadge}</div>
           ${ptgs?`<div class="qcard-tags" style="margin-top:2px">${ptgs}</div>`:''}
-          <div><button class="add-ptag-btn" onclick="showAddPTag('${q.id}')">＋ My Tag</button></div>
+          <div><button class="add-ptag-btn" onclick="showAddPTag('${q.id}')">嚗?My Tag</button></div>
           <div id="ptag-input-${q.id}" style="display:none"><div class="ptag-input-row">
-            <input class="ptag-input" id="ptag-val-${q.id}" placeholder="Tag name…" onkeydown="if(event.key==='Enter')addPTag('${q.id}')">
+            <input class="ptag-input" id="ptag-val-${q.id}" placeholder="Tag name?? onkeydown="if(event.key==='Enter')addPTag('${q.id}')">
             <button onclick="addPTag('${q.id}')" style="padding:4px 11px;border-radius:6px;background:var(--purple);color:#fff;font-size:11px;font-weight:600;border:none;cursor:pointer">Add</button>
           </div></div>
           <div class="qcard-ans" id="ba-${q.id}">${q.answer?'Answer: '+esc(q.answer):'No answer set'}</div>
-          <button class="show-ans" onclick="toggleBA('${q.id}')">👁 Show Answer</button>
+          <button class="show-ans" onclick="toggleBA('${q.id}')">?? Show Answer</button>
         </div></div>`;
     }).join('');
 
@@ -609,15 +613,15 @@ function renderBrowse(){
   const showBar=browseSelectedTags.length>0;
   const startBarHTML=`<div id="br-start-bar"${showBar?' class="show"':''}>
     <div id="br-start-info">
-      ${browseSelectedTags.length} topic${browseSelectedTags.length!==1?'s':''} selected · ${selCount} question${selCount!==1?'s':''}
-      <small>≈ ${estMins} min · ${browseSelectedTags.map(t=>esc(tagDisplay(t))).join(', ')}</small>
+      ${browseSelectedTags.length} topic${browseSelectedTags.length!==1?'s':''} selected 繚 ${selCount} question${selCount!==1?'s':''}
+      <small>??${estMins} min 繚 ${browseSelectedTags.map(t=>esc(tagDisplay(t))).join(', ')}</small>
     </div>
     <div class="br-logic-tog">
       <button class="br-logic-btn${browseLogic==='or'?' on':''}" onclick="setBrowseLogic('or')">OR</button>
       <button class="br-logic-btn${browseLogic==='and'?' on':''}" onclick="setBrowseLogic('and')">AND</button>
     </div>
-    <button class="br-clear-btn" onclick="clearBrowseTags()">✕ Clear</button>
-    <button class="br-start-btn" onclick="startFromBrowse()">Start Practice →</button>
+    <button class="br-clear-btn" onclick="clearBrowseTags()">??Clear</button>
+    <button class="br-start-btn" onclick="startFromBrowse()">Start Practice ??/button>
   </div>`;
 
   $('tb-browse').innerHTML=`
@@ -632,6 +636,7 @@ function renderBrowse(){
         ${startBarHTML}
       </div>
     </div>`;
+  if(brMain && $('br-main')) $('br-main').scrollTop = scrollPos;
   if(window.MathJax)MathJax.typesetPromise([$('tb-browse')]).catch(()=>{});
 }
 
@@ -664,14 +669,14 @@ async function toggleFlag(qid){
   }catch(e){console.warn('flag save failed',e)}
   // update button in practice if present
   const btn=document.getElementById('flag-btn-'+qid);
-  if(btn){btn.textContent=flaggedQuestions.has(qid)?'🚩 Flagged':'🚩 Flag';btn.classList.toggle('flagged',flaggedQuestions.has(qid));}
+  if(btn){btn.textContent=flaggedQuestions.has(qid)?'? Flagged':'? Flag';btn.classList.toggle('flagged',flaggedQuestions.has(qid));}
   toast(flaggedQuestions.has(qid)?'Flagged for review':'Flag removed');
 }
 function toggleBA(id){
   const el=$('ba-'+id),btn=el?.nextElementSibling;
   if(!el)return;
   const on=el.classList.toggle('on');
-  if(btn)btn.textContent=on?'🙈 Hide Answer':'👁 Show Answer';
+  if(btn)btn.textContent=on?'?? Hide Answer':'?? Show Answer';
 }
 function setBrowseDiff(d){browseDiff=d;renderBrowse()}
 function setBrowsePersonalTag(t){browsePersonalTag=t;renderBrowse()}
@@ -713,14 +718,14 @@ async function removePersonalTag(qid,tidx){
   renderBrowse();
 }
 
-// ══════════════════════ PRACTICE ══════════════════════
+// ?????????????????????? PRACTICE ??????????????????????
 function renderPractice(){
   if(P.phase==='idle'){
     $('tb-practice').innerHTML=`<div class="prac-idle-wrap"><div class="idle-wrap">
-      <div style="font-size:44px;margin-bottom:14px">📚</div>
+      <div style="font-size:44px;margin-bottom:14px">??</div>
       <div class="idle-title">No practice session</div>
       <div class="idle-sub">Go to the <strong>Browse</strong> tab, select the topics you want to practise (they will highlight), then tap <strong>Start Practice</strong>.</div>
-      <button class="start-btn" onclick="goTab('browse')">← Go to Browse</button>
+      <button class="start-btn" onclick="goTab('browse')">??Go to Browse</button>
     </div></div>`;
   }
   else if(P.phase==='question'||P.phase==='feedback')renderQuestion();
@@ -781,7 +786,7 @@ function renderQuestion(){
   };
 
   const fbHTML=inFeedbackPhase?`
-    <div class="fb-icon">${displayChosen===q.answer?'✅':'❌'}</div>
+    <div class="fb-icon">${displayChosen===q.answer?'??:'??}</div>
     <div class="fb-text"><b>${displayChosen===q.answer?'Correct!':'Wrong'}</b>
     ${displayChosen!==q.answer&&q.answer?`Correct answer: <strong>${esc(q.answer)}</strong>`:''}
     ${q.notes?`<br><small style="color:var(--text-lt)">${esc(q.notes)}</small>`:''}
@@ -796,16 +801,16 @@ function renderQuestion(){
     else if(sa)cls+=' qn-answered';
     // unanswered = default white
     return`<button class="${cls}" onclick="goToQ(${si})" title="Q${si+1}">${si+1}</button>`;
-  }).join('')+`<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);width:100%;display:flex;justify-content:center"><button class="finish-btn" onclick="finishSession()" title="Finish & Submit">✓</button></div>`;
+  }).join('')+`<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);width:100%;display:flex;justify-content:center"><button class="finish-btn" onclick="finishSession()" title="Finish & Submit">??/button></div>`;
 
   const fmtTime=d=>{const h=d.getHours(),m=d.getMinutes();return`${h}:${m.toString().padStart(2,'0')}`};
-  const endTime=sessionStartTime?new Date(sessionStartTime.getTime()+P.queue.length*1.25*60000):null;
-  const totalMins=Math.round(P.queue.length*1.25);
-  const timerHTML=endTime?`<div id="sess-timebar">⏱ ${fmtTime(sessionStartTime)} – ${fmtTime(endTime)} &nbsp;(${totalMins} min for ${P.queue.length} questions)</div>`:'';
+  const endTime=sessionStartTime?new Date(sessionStartTime.getTime()+P.queue.length*1.6667*60000):null;
+  const totalMins=Math.round(P.queue.length*1.6667);
+  const timerHTML=endTime?`<div id="sess-timebar">??${fmtTime(sessionStartTime)} ??${fmtTime(endTime)} &nbsp;(${totalMins} min for ${P.queue.length} questions)</div>`:'';
 
 
   // next btn label
-  const nextLabel=nextUnanswered()===-1?'See Results →':'Next →';
+  const nextLabel=nextUnanswered()===-1?'See Results ??:'Next ??;
   const showNextBtn=inFeedbackPhase||isAnswered;
 
   $('tb-practice').innerHTML=`
@@ -830,8 +835,8 @@ function renderQuestion(){
           <div class="feedback-box${inFeedbackPhase?' on':''}">${fbHTML}</div>
           ${showNextBtn?`<button class="next-btn" onclick="nextQ()">${nextLabel}</button>`:''}
           <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between">
-            <button id="flag-btn-${q.id}" class="flag-btn${flaggedQuestions.has(q.id)?' flagged':''}" onclick="toggleFlag('${q.id}')">${flaggedQuestions.has(q.id)?'🚩 Flagged':'🚩 Flag'}</button>
-            ${!isAnswered&&!inFeedbackPhase?`<button class="skip-btn" onclick="skipQ()">Skip →</button>`:''}
+            <button id="flag-btn-${q.id}" class="flag-btn${flaggedQuestions.has(q.id)?' flagged':''}" onclick="toggleFlag('${q.id}')">${flaggedQuestions.has(q.id)?'? Flagged':'? Flag'}</button>
+            ${!isAnswered&&!inFeedbackPhase?`<button class="skip-btn" onclick="skipQ()">Skip ??/button>`:''}
           </div>
         </div>
       </div>
@@ -854,7 +859,7 @@ async function pickAns(l){
   }else{
     // end mode: no feedback shown, jump to next unanswered
     const nxt=nextUnanswered();
-    if(nxt===-1){toast('All questions done — press ✓ to submit.',3000);renderQuestion();}
+    if(nxt===-1){toast('All questions done ??press ??to submit.',3000);renderQuestion();}
     else{P.idx=nxt;P.chosen=null;P.phase='question';renderQuestion();}
   }
 }
@@ -867,14 +872,14 @@ function nextUnanswered(){
 }
 function nextQ(){
   const nxt=nextUnanswered();
-  if(nxt===-1){toast('All questions done — press ✓ to submit.',3000);renderQuestion();}
+  if(nxt===-1){toast('All questions done ??press ??to submit.',3000);renderQuestion();}
   else{P.idx=nxt;P.chosen=null;P.phase='question';renderQuestion();}
 }
 function skipQ(){
   if(P.answers[P.idx])return;
   P.answers[P.idx]={skipped:true};
   const nxt=nextUnanswered();
-  if(nxt===-1){toast('All questions done — press ✓ to submit.',3000);renderQuestion();}
+  if(nxt===-1){toast('All questions done ??press ??to submit.',3000);renderQuestion();}
   else{P.idx=nxt;P.chosen=null;P.phase='question';renderQuestion();}
 }
 function finishSession(){stopTimer();P.phase='end';renderEnd();}
@@ -916,17 +921,17 @@ function renderEnd(){
       <div class="weak-pct">${w.pct}%</div>
     </div>`).join('')}
   </div>`
-  :`<div class="end-sub" style="color:var(--green)">No weak areas — excellent! 🎉</div>`;
+  :`<div class="end-sub" style="color:var(--green)">No weak areas ??excellent! ??</div>`;
 
   // Question review cards
   const reviewCards=P.queue.map((q,i)=>{
     const a=P.answers[i];
     if(!a){return'';}
     const cls=a.skipped?'rc-skipped':a.isCorrect?'rc-correct':'rc-wrong';
-    const status=a.skipped?'Skipped':a.isCorrect?'✓ Correct':'✗ Wrong';
+    const status=a.skipped?'Skipped':a.isCorrect?'??Correct':'??Wrong';
     const ansInfo=a.skipped
       ?`Ans: ${esc(q.answer||'?')}`
-      :(a.isCorrect?`Ans: ${esc(a.chosen)}`:`You: ${esc(a.chosen)} • Ans: ${esc(q.answer||'?')}`);
+      :(a.isCorrect?`Ans: ${esc(a.chosen)}`:`You: ${esc(a.chosen)} ??Ans: ${esc(q.answer||'?')}`);
     return`<div class="rcard ${cls}">
       <div class="rcard-head">
         <span class="rcard-qnum">Q${i+1}</span>
@@ -943,9 +948,9 @@ function renderEnd(){
   <div class="end-wrap">
     <div class="score-ring" style="border-color:${col}">
       <div class="score-pct" style="color:${col}">${pct}%</div>
-      <div class="score-frac">${c} / ${n}${skipped?` · ${skipped} skipped`:''}</div>
+      <div class="score-frac">${c} / ${n}${skipped?` 繚 ${skipped} skipped`:''}</div>
     </div>
-    <div class="end-title">${pct>=70?'Well done! 🌟':pct>=40?'Keep going! 💪':'More practice needed 📖'}</div>
+    <div class="end-title">${pct>=70?'Well done! ??':pct>=40?'Keep going! ?':'More practice needed ??'}</div>
     ${weakHTML}
     <div class="end-btns">
       <button class="ebtn primary" onclick="P.phase='idle';goTab('browse')">Pick More Topics</button>
@@ -953,7 +958,7 @@ function renderEnd(){
     </div>
   </div>
   <div class="review-section">
-    <button class="review-toggle" onclick="toggleReview(this)">▼ Review Questions (${P.queue.length})</button>
+    <button class="review-toggle" onclick="toggleReview(this)">??Review Questions (${P.queue.length})</button>
     <div id="review-list" style="display:none">${reviewCards}</div>
   </div>
   </div>`;
@@ -963,11 +968,11 @@ function toggleReview(btn){
   if(!list)return;
   const open=list.style.display==='none';
   list.style.display=open?'block':'none';
-  btn.textContent=(open?'▲':'▼')+` Review Questions (${P.queue.length})`;
+  btn.textContent=(open?'??:'??)+` Review Questions (${P.queue.length})`;
   if(open&&window.MathJax)MathJax.typesetPromise([list]).catch(()=>{});
 }
 
-// ══════════════════════ STATS ══════════════════════
+// ?????????????????????? STATS ??????????????????????
 function computeTwoSessionStats(){
   // group all attempts by questionId (already sorted desc = newest first)
   const byQ={};
@@ -998,14 +1003,14 @@ function computeTwoSessionStats(){
 
 function renderStats(){
   if(!attempts.length){
-    $('tb-stats').innerHTML=`<div class="stats-empty"><div class="stats-empty-icon">📊</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">No data yet</div><div>Complete some practice sessions to see your stats here.</div></div>`;
+    $('tb-stats').innerHTML=`<div class="stats-empty"><div class="stats-empty-icon">??</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">No data yet</div><div>Complete some practice sessions to see your stats here.</div></div>`;
     return;
   }
   const{currStats,prevStats}=computeTwoSessionStats();
   const tot=attempts.length,cor=attempts.filter(a=>a.isCorrect).length,ovPct=Math.round(cor/tot*100);
   const uniq=new Set(attempts.map(a=>a.questionId)).size;
 
-  const fmtDate=d=>{if(!d)return'—';const dd=d instanceof Date?d:(d.toDate?.()??new Date(d));return`${dd.getDate()}/${dd.getMonth()+1}/${dd.getFullYear()}`};
+  const fmtDate=d=>{if(!d)return'??;const dd=d instanceof Date?d:(d.toDate?.()??new Date(d));return`${dd.getDate()}/${dd.getMonth()+1}/${dd.getFullYear()}`};
   const pctCls=p=>p==null?'pct-new':p>=80?'pct-good':p>=50?'pct-mid':'pct-bad';
 
   // merge all attempted tags from either session
@@ -1013,16 +1018,16 @@ function renderStats(){
   const{time,grouped,other}=groupTagsForBrowse(allAttemptedTags);
 
   const cell=(s)=>{
-    if(!s)return`<div class="stats-cell"><span class="stats-score" style="color:#ccc">—</span><span class="stats-pct pct-new">—</span><span class="stats-date">—</span></div>`;
+    if(!s)return`<div class="stats-cell"><span class="stats-score" style="color:#ccc">??/span><span class="stats-pct pct-new">??/span><span class="stats-date">??/span></div>`;
     const pct=s.total>0?Math.round(s.correct/s.total*100):null;
-    return`<div class="stats-cell"><span class="stats-score">${s.correct}/${s.total}</span><span class="stats-pct ${pctCls(pct)}">${pct!=null?pct+'%':'—'}</span><span class="stats-date">${fmtDate(s.lastDate)}</span></div>`;
+    return`<div class="stats-cell"><span class="stats-score">${s.correct}/${s.total}</span><span class="stats-pct ${pctCls(pct)}">${pct!=null?pct+'%':'??}</span><span class="stats-date">${fmtDate(s.lastDate)}</span></div>`;
   };
 
   const makeRow=(t,label)=>{
     const c=currStats[t],p=prevStats[t];
     if(!c&&!p)return'';
-    const arrow=c&&p?(Math.round(c.correct/c.total*100)>Math.round(p.correct/p.total*100)?'<span class="stats-arrow" style="color:var(--green)">↑</span>':Math.round(c.correct/c.total*100)<Math.round(p.correct/p.total*100)?'<span class="stats-arrow" style="color:var(--red)">↓</span>':'<span class="stats-arrow" style="color:#bbb">→</span>'):'';
-    return`<div class="stats-row"><div class="stats-rname">— ${esc(label||t)} ${arrow}</div>${cell(p)}${cell(c)}</div>`;
+    const arrow=c&&p?(Math.round(c.correct/c.total*100)>Math.round(p.correct/p.total*100)?'<span class="stats-arrow" style="color:var(--green)">??/span>':Math.round(c.correct/c.total*100)<Math.round(p.correct/p.total*100)?'<span class="stats-arrow" style="color:var(--red)">??/span>':'<span class="stats-arrow" style="color:#bbb">??/span>'):'';
+    return`<div class="stats-row"><div class="stats-rname">??${esc(label||t)} ${arrow}</div>${cell(p)}${cell(c)}</div>`;
   };
 
   const makeGroup=(name,tagArr,labelFn)=>{
@@ -1046,11 +1051,11 @@ function renderStats(){
   };
 
   let html='';
-  if(time.length)html+=makeGroup('📅 By Time',time);
+  if(time.length)html+=makeGroup('?? By Time',time);
   Object.keys(grouped).sort().forEach(g=>{
-    html+=makeGroup('📚 '+g.charAt(0).toUpperCase()+g.slice(1),grouped[g],t=>t.slice(g.length+3));
+    html+=makeGroup('?? '+g.charAt(0).toUpperCase()+g.slice(1),grouped[g],t=>t.slice(g.length+3));
   });
-  if(other.length)html+=makeGroup('🏷 Other',other);
+  if(other.length)html+=makeGroup('? Other',other);
 
   $('tb-stats').innerHTML=`
   <div class="stat-grid" style="padding:14px 14px 0">
@@ -1071,3 +1076,5 @@ function renderStats(){
 </script>
 </body>
 </html>
+
+
