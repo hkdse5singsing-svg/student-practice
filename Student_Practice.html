@@ -394,6 +394,7 @@ let flaggedQuestions=new Set();
 // P.answers[i] = null | {chosen,isCorrect} | {skipped:true}
 let P={phase:'idle',queue:[],answers:[],idx:0,chosen:null,results:[]};
 let personalTags={};  // {questionId:[tag,...]}
+let tagCounts={}, browseTagCounts={};
 
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
@@ -436,21 +437,27 @@ function doSignOut(){fbAuth.signOut()}
 // ══════════════════════ DATA ══════════════════════
 async function loadData(){
   loader(true);
+  // Load questions first — must succeed for the app to be usable
   try{
-    const [qSnap,aSnap,ptSnap,flSnap]=await Promise.all([
-      fbDb.collection('mc_questions').get(),
+    const qSnap=await fbDb.collection('mc_questions').get();
+    questions=qSnap.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){toast('Error loading questions: '+e.message,5000);loader(false);renderTab(curTab);return;}
+  // Load user data independently — failures here don't block question display
+  try{
+    const [aSnap,ptSnap]=await Promise.all([
       fbDb.collection('students').doc(fbUser.uid).collection('attempts')
         .orderBy('timestamp','desc').limit(600).get(),
-      fbDb.collection('students').doc(fbUser.uid).collection('personalTags').get(),
-      fbDb.collection('students').doc(fbUser.uid).collection('flags').get()
+      fbDb.collection('students').doc(fbUser.uid).collection('personalTags').get()
     ]);
-    questions=qSnap.docs.map(d=>({id:d.id,...d.data()}));
     attempts=aSnap.docs.map(d=>({id:d.id,...d.data()}));
     personalTags={};
     ptSnap.docs.forEach(d=>{personalTags[d.id]=d.data().tags||[]});
+  }catch(e){console.warn('Error loading user data:',e)}
+  try{
+    const flSnap=await fbDb.collection('students').doc(fbUser.uid).collection('flags').get();
     flaggedQuestions=new Set(flSnap.docs.map(d=>d.id));
-    computeTagStats();
-  }catch(e){toast('Error loading: '+e.message,4000)}
+  }catch(e){console.warn('Error loading flags (check Firestore rules):',e)}
+  computeTagStats();
   loader(false);
   renderTab(curTab);
 }
@@ -529,6 +536,9 @@ function renderBrowse(){
   const{time,grouped,other}=groupTagsForBrowse(tags);
   const tagCnt={};tags.forEach(t=>{tagCnt[t]=questions.filter(q=>(q.tags||[]).includes(t)).length});
 
+  tagCounts = {};
+  tags.forEach(t=>{tagCounts[t]=questions.filter(q=>(q.tags||[]).includes(t)).length});
+
   // Grid: show questions matching selected tags (or all if none selected)
   let qs;
   if(browseSelectedTags.length===0){
@@ -543,8 +553,12 @@ function renderBrowse(){
   if(browseShowFlagged)qs=qs.filter(q=>flaggedQuestions.has(q.id));
 
   const isSelTag=t=>browseSelectedTags.includes(t);
-  const fpill=(t,label)=>`<div class="br-fpill${isSelTag(t)?' on':''}" onclick="toggleBrowseTag('${esc(t)}')">
-    <span class="pname">${esc(label||t)}</span><span class="cnt">${tagCnt[t]||0}</span></div>`;
+  const fpill=(t,label)=>{
+    const sel = isSelTag(t);
+    const inputHtml = sel ? `<input type="number" min="1" max="${tagCounts[t]}" value="${browseTagCounts[t] || tagCounts[t]}" onchange="setTagCount('${esc(t)}', this.value)" onclick="event.stopPropagation()" style="width:40px;margin-left:5px;font-size:11px;">` : '';
+    return `<div class="br-fpill${sel?' on':''}" onclick="toggleBrowseTag('${esc(t)}')">
+      <span class="pname">${esc(label||t)}</span><span class="cnt">${tagCounts[t]||0}</span>${inputHtml}</div>`;
+  };
 
   let sidebarHTML=`<div class="br-fpill all-pill${browseSelectedTags.length===0?' on':''}" onclick="clearBrowseTags()"><span class="pname">All Questions</span><span class="cnt">${questions.length}</span></div>`;
   if(time.length){sidebarHTML+=`<div class="br-sec-title">📅 By Time</div>`+time.map(t=>fpill(t)).join('');}
@@ -590,7 +604,7 @@ function renderBrowse(){
     }).join('');
 
   // Start bar (sticky bottom)
-  const selCount=qs.length;
+  const selCount = browseSelectedTags.reduce((sum, t) => sum + (browseTagCounts[t] || tagCounts[t] || 0), 0);
   const estMins=Math.ceil(selCount*1.25);
   const showBar=browseSelectedTags.length>0;
   const startBarHTML=`<div id="br-start-bar"${showBar?' class="show"':''}>
@@ -624,10 +638,17 @@ function renderBrowse(){
 function toggleFlaggedFilter(){browseShowFlagged=!browseShowFlagged;renderBrowse();}
 function toggleBrowseTag(t){
   const idx=browseSelectedTags.indexOf(t);
-  if(idx===-1)browseSelectedTags.push(t);else browseSelectedTags.splice(idx,1);
+  if(idx===-1){
+    browseSelectedTags.push(t);
+    const count = questions.filter(q=>(q.tags||[]).includes(t)).length;
+    browseTagCounts[t] = Math.min(10, count);
+  }else{
+    browseSelectedTags.splice(idx,1);
+    delete browseTagCounts[t];
+  }
   renderBrowse();
 }
-function clearBrowseTags(){browseSelectedTags=[];renderBrowse();}
+function clearBrowseTags(){browseSelectedTags=[]; browseTagCounts={}; renderBrowse();}
 function setBrowseLogic(l){browseLogic=l;renderBrowse();}
 function startFromBrowse(){
   if(!browseSelectedTags.length){toast('Select topics first.');return;}
@@ -654,6 +675,11 @@ function toggleBA(id){
 }
 function setBrowseDiff(d){browseDiff=d;renderBrowse()}
 function setBrowsePersonalTag(t){browsePersonalTag=t;renderBrowse()}
+
+function setTagCount(t, val){
+  const num = parseInt(val) || 1;
+  browseTagCounts[t] = Math.max(1, Math.min(num, tagCounts[t] || 0));
+}
 
 function showAddPTag(qid){
   const wrap=document.getElementById('ptag-input-'+qid);
@@ -708,11 +734,18 @@ function startSession(){
   if(!browseSelectedTags.length){toast('Select topics in Browse first.');return}
   let pool;
   if(browseLogic==='or'){
-    pool=questions.filter(q=>browseSelectedTags.some(t=>(q.tags||[]).includes(t)));
+    pool = [];
+    browseSelectedTags.forEach(tag => {
+      const qs = questions.filter(q => (q.tags||[]).includes(tag));
+      const num = browseTagCounts[tag] || qs.length;
+      const shuffled = qs.sort(() => Math.random() - 0.5);
+      pool.push(...shuffled.slice(0, num));
+    });
+    pool = [...new Set(pool)]; // dedup
+    pool = pool.sort(() => Math.random() - 0.5);
   }else{
     pool=questions.filter(q=>browseSelectedTags.every(t=>(q.tags||[]).includes(t)));
   }
-  pool=pool.sort(()=>Math.random()-.5);
   if(!pool.length){toast('No questions match this selection.');return}
   sessionStartTime=new Date();
   P={phase:'question',queue:pool,answers:new Array(pool.length).fill(null),idx:0,chosen:null,results:[]};
