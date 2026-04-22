@@ -403,19 +403,39 @@ function loader(on){$('loader').classList.toggle('on',on)}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on')}
 
 // ?????????????????????? INIT ??????????????????????
-window.addEventListener('load',function(){
+let initStarted=false;
+function doInit(){
+  if(initStarted)return;
+  initStarted=true;
   loader(false);
   const c=FB_CONFIG;
   if(!c||c.apiKey==='YOUR_API_KEY'){showScreen('s-setup');return}
-  if(typeof firebase==='undefined'){toast('Firebase not loaded. Retrying...');setTimeout(initApp,2000);return}
+  if(typeof firebase==='undefined'){
+    toast('Firebase not available');
+    showScreen('s-setup');
+    return
+  }
   try{
     if(!firebase.apps.length){firebase.initializeApp(c)}
     fbAuth=firebase.auth();
     fbDb=firebase.firestore();
     fbAuth.onAuthStateChanged(onAuth);
-  }catch(e){console.error('Init error:',e);showScreen('s-setup')}
-});
-setTimeout(function(){if(!fbAuth){window.dispatchEvent(new Event('load'))}},5000);
+  }catch(e){
+    console.error('Init error:',e);
+    showScreen('s-setup');
+    toast('Error: '+e.message)
+  }
+}
+window.addEventListener('load',doInit);
+// Fallback: try init after delay to ensure Firebase loaded
+setTimeout(doInit,2000);
+// Force show something after 10 seconds
+setTimeout(function(){
+  if($('loader').classList.contains('on')){
+    showScreen('s-setup');
+    toast('Connection timeout')
+  }
+},10000);
 
 function onAuth(user){
   if(user){
