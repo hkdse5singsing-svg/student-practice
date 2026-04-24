@@ -314,6 +314,13 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 /* ?? LOADING OVERLAY ?? */
 #loader{position:fixed;inset:0;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;z-index:500;font-size:14px;color:var(--text-lt);display:none}
 #loader.on{display:flex}
+/* ?? INVITE SCREEN ?? */
+.invite-input{width:100%;padding:13px 16px;border:2px solid var(--border);border-radius:8px;font-size:20px;font-weight:700;letter-spacing:5px;text-align:center;text-transform:uppercase;margin-bottom:8px;transition:border-color var(--trans)}
+.invite-input:focus{border-color:var(--blue);outline:none}
+.invite-error{font-size:12px;color:var(--red);margin-bottom:12px;min-height:16px;text-align:center;line-height:1.4}
+.invite-btn{width:100%;padding:13px;background:var(--blue);color:#fff;border-radius:8px;font-size:14px;font-weight:700;transition:background var(--trans);margin-bottom:10px}
+.invite-btn:hover{background:var(--blue-dk)}
+.invite-signout{font-size:12px;color:var(--text-lt);background:none;border:none;cursor:pointer;text-decoration:underline;padding:2px}
 </style>
 </head>
 <body>
@@ -348,6 +355,19 @@ input,textarea{font-family:inherit;font-size:13px;outline:none}
 </div>
 
 <!-- ?? APP SCREEN ?? -->
+
+<!-- INVITE SCREEN -->
+<div class="screen" id="s-invite">
+  <div class="auth-box">
+    <div class="auth-icon">&#x1F3AB;</div>
+    <div class="auth-title">Invitation Code</div>
+    <div class="auth-sub" id="invite-sub">Enter your invitation code to access practice materials.</div>
+    <input type="text" id="invite-input" class="invite-input" placeholder="e.g. ST2847" maxlength="8" autocomplete="off" spellcheck="false">
+    <div class="invite-error" id="invite-error"></div>
+    <button class="invite-btn" onclick="submitCode()">Confirm</button>
+    <button class="invite-signout" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
 <div class="screen" id="s-app">
   <div id="logo-bar">
     <img class="logo-img" src="data:image/png;base64,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" alt="Firebase Console">
@@ -412,6 +432,7 @@ window.addEventListener('load',()=>{
     fbAuth=firebase.auth();
     fbDb=firebase.firestore();
     fbAuth.onAuthStateChanged(onAuth);
+    document.getElementById('invite-input').addEventListener('keydown',e=>{if(e.key==='Enter')submitCode();});
   }catch(e){showScreen('s-setup');console.error(e)}
 });
 
@@ -419,8 +440,10 @@ function onAuth(user){
   if(user){
     fbUser=user;
     $('hdr-name').textContent=user.displayName||user.email;
-    showScreen('s-app');
-    loadData();
+    $('invite-sub').textContent='Signed in as '+(user.displayName||user.email)+'. Enter your invitation code.';
+    $('invite-input').value='';
+    $('invite-error').textContent='';
+    showScreen('s-invite');
   }else{
     fbUser=null;
     showScreen('s-auth');
@@ -433,6 +456,32 @@ function doSignIn(){
   fbAuth.signInWithPopup(p).catch(e=>toast('Sign-in failed: '+e.message,4000));
 }
 function doSignOut(){fbAuth.signOut()}
+
+async function submitCode(){
+  const code=$('invite-input').value.trim().toUpperCase();
+  $('invite-error').textContent='';
+  if(!code){$('invite-error').textContent='Please enter your invitation code.';return}
+  loader(true);
+  try{
+    const doc=await fbDb.collection('invitation_codes').doc(code).get();
+    if(!doc.exists){
+      $('invite-error').textContent='Code not found. Please check with your teacher.';
+      loader(false);return;
+    }
+    const d=doc.data();
+    const expires=d.expiresAt.toDate();
+    if(expires<new Date()){
+      $('invite-error').textContent='Code expired. Please ask your teacher for a new code.';
+      loader(false);return;
+    }
+    loader(false);
+    showScreen('s-app');
+    loadData();
+  }catch(e){
+    $('invite-error').textContent='Error: '+e.message;
+    loader(false);
+  }
+}
 
 // ==================== DATA ====================
 async function loadData(){
